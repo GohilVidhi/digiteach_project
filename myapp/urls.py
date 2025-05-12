@@ -31,6 +31,18 @@ urlpatterns = [
     path('scalp/', scalp_view.as_view()),
     path('scalp/<int:id>/', scalp_view.as_view()),
 
+    path('complaint/', complaint_view.as_view()),
+    path('complaint/<int:id>/', complaint_view.as_view()),
+    
+    path('past_history/', past_history_view.as_view()),
+    path('past_history/<int:id>/', past_history_view.as_view()),
+    
+    path('personal_ho/', personal_H_O_view.as_view()),
+    path('personal_ho/<int:id>/', personal_H_O_view.as_view()),
+
+    path('fc/', fc_view.as_view()),
+    path('fc/<int:id>/', fc_view.as_view()),
+
     
 
 ]

@@ -162,3 +162,200 @@ class scalp_view(APIView):
         else:
             return Response({'status': "invalid data"})
         
+
+
+
+
+
+#====================
+class complaint_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = complaint.objects.get(id=id)
+                serializer = complaint_serializers(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except complaint.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = complaint.objects.all().order_by("-id")
+            serializer = complaint_serializers(uid, many=True)
+            return Response({'status': 'success', 'data': serializer.data})
+
+    def post(self, request):
+        serializer = complaint_serializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = complaint.objects.get(id=id)
+        except complaint.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = complaint_serializers(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = complaint.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except complaint.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        
+        
+        
+#-----------=========================
+class past_history_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = past_history.objects.get(id=id)
+                serializer = past_history_serializers(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except past_history.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = past_history.objects.all().order_by("-id")
+            serializer = past_history_serializers(uid, many=True)
+            return Response({'status': 'success', 'data': serializer.data})
+
+    def post(self, request):
+        serializer = past_history_serializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = past_history.objects.get(id=id)
+        except past_history.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = past_history_serializers(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = past_history.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except past_history.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        
+        
+        
+#================
+
+class personal_H_O_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = personal_H_O.objects.get(id=id)
+                serializer = personal_H_O_serializers(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except personal_H_O.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = personal_H_O.objects.all().order_by("-id")
+            serializer = personal_H_O_serializers(uid, many=True)
+            return Response({'status': 'success', 'data': serializer.data})
+
+    def post(self, request):
+        serializer = personal_H_O_serializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = personal_H_O.objects.get(id=id)
+        except personal_H_O.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = personal_H_O_serializers(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = personal_H_O.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except personal_H_O.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        
+
+class fc_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = FC.objects.get(id=id)
+                serializer = FCSerializer(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except FC.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = FC.objects.all().order_by("-id")
+            serializer = FCSerializer(uid, many=True)
+            return Response({'status': 'success', 'data': serializer.data})
+
+    def post(self, request):
+        serializer = FCSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = FC.objects.get(id=id)
+        except FC.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = FCSerializer(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = FC.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except FC.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})

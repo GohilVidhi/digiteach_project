@@ -41,8 +41,46 @@ class scalp(models.Model):
         return self.sr_no
 
 
+class complaint(models.Model):
+    name=models.CharField(max_length=250,blank=True,null=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+class past_history(models.Model):
+    name=models.CharField(max_length=250,blank=True,null=True)
+
+    def __str__(self) -> str:
+        return self.name
 
 
+class personal_H_O(models.Model):
+    name=models.CharField(max_length=250,blank=True,null=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+
+class PatientCondition(models.Model):
+    complaints = models.ManyToManyField(complaint)
+    past_history = models.ManyToManyField(past_history)
+    personal_H_O = models.ManyToManyField(personal_H_O)
+    poller = models.BooleanField(default=False)
+    icterus = models.BooleanField(default=False)
+    LAP = models.CharField(max_length=250, blank=True)
+    clubbing = models.BooleanField(default=False)
+    cyanosis = models.BooleanField(default=False)
+
+class FC(models.Model):
+    referrer = models.CharField(max_length=250)
+    patient_name = models.CharField(max_length=250)
+    age = models.IntegerField()
+    gender = models.CharField(max_length=50)
+    address = models.TextField()
+    mobile_no = models.BigIntegerField()
+    patient_condition = models.OneToOneField(PatientCondition, on_delete=models.CASCADE)
+    Opinion = models.TextField()
 
 
 

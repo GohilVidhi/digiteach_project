@@ -42,3 +42,29 @@ Formate :
   "datetime_discharge": "2025-05-13 16:30:00",
   "fees": 1500
 }
+
+
+
+4 : Fc API : 
+
+Formate : 
+
+{
+  "referrer": "Dr. Ahuja",
+  "patient_name": "Raj Mehta",
+  "age": 35,
+  "gender": "Male",
+  "address": "Sector 12, Mumbai",
+  "mobile_no": 9998898876,
+  "patient_condition": {
+    "complaints": [1, 2],
+    "past_history": [1],
+    "personal_H_O": [1, 2],
+    "poller": false,
+    "icterus": false,
+    "LAP": "Normal",
+    "clubbing": false,
+    "cyanosis": false
+  },
+  "Opinion": "Admit under observation"
+}

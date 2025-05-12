@@ -100,4 +100,105 @@ class scalp_serializers(serializers.Serializer):
         instance.save()
         return instance
 
+
+
+
+
+
+
+class complaint_serializers(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    name=serializers.CharField(max_length=250,required=True)
    
+
+    class Meta:
+        models=complaint
+        fields ='__all__'
+        
+
+    def create(self, validated_data):
+        return complaint.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name=validated_data.get('name',instance.name)
+        instance.save()
+        return instance     
+    
+
+
+class past_history_serializers(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    name=serializers.CharField(max_length=250,required=True)
+   
+
+    class Meta:
+        models=past_history
+        fields ='__all__'
+        
+
+    def create(self, validated_data):
+        return past_history.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name=validated_data.get('name',instance.name)
+        instance.save()
+        return instance     
+    
+    
+class personal_H_O_serializers(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    name=serializers.CharField(max_length=250,required=True)
+   
+
+    class Meta:
+        models=personal_H_O
+        fields ='__all__'
+        
+
+    def create(self, validated_data):
+        return personal_H_O.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name=validated_data.get('name',instance.name)
+        instance.save()
+        return instance     
+
+
+class PatientConditionSerializer(serializers.ModelSerializer):
+    complaints = serializers.PrimaryKeyRelatedField(queryset=complaint.objects.all(), many=True)
+    past_history = serializers.PrimaryKeyRelatedField(queryset=past_history.objects.all(), many=True)
+    personal_H_O = serializers.PrimaryKeyRelatedField(queryset=personal_H_O.objects.all(), many=True)
+
+    class Meta:
+        model = PatientCondition
+        fields = [
+            'complaints', 'past_history', 'personal_H_O',
+            'poller', 'icterus', 'LAP', 'clubbing', 'cyanosis'
+        ]
+
+class FCSerializer(serializers.ModelSerializer):
+    patient_condition = PatientConditionSerializer()
+
+    class Meta:
+        model = FC
+        fields = [
+            'referrer', 'patient_name', 'age', 'gender',
+            'address', 'mobile_no', 'patient_condition', 'Opinion'
+        ]
+
+    def create(self, validated_data):
+        condition_data = validated_data.pop('patient_condition')
+
+        complaints = condition_data.pop('complaints')
+        past_history = condition_data.pop('past_history')
+        personal_H_O = condition_data.pop('personal_H_O')
+
+        patient_condition = PatientCondition.objects.create(**condition_data)
+        patient_condition.complaints.set(complaints)
+        patient_condition.past_history.set(past_history)
+        patient_condition.personal_H_O.set(personal_H_O)
+        patient_condition.save()
+
+        fc_instance = FC.objects.create(patient_condition=patient_condition, **validated_data)
+        return fc_instance
+
