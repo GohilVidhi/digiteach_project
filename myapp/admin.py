@@ -8,4 +8,5 @@ admin.site.register(scalp)
 admin.site.register(complaint)
 admin.site.register(past_history)
 admin.site.register(personal_H_O)
+admin.site.register(PatientCondition)
 

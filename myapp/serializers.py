@@ -175,16 +175,20 @@ class PatientConditionSerializer(serializers.ModelSerializer):
             'complaints', 'past_history', 'personal_H_O',
             'poller', 'icterus', 'LAP', 'clubbing', 'cyanosis'
         ]
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["complaints"] = complaint_serializers(instance.complaints,many=True).data  
+        representation["past_history"] = past_history_serializers(instance.past_history,many=True).data  
+        representation["personal_H_O"] = personal_H_O_serializers(instance.personal_H_O,many=True).data  
+        return representation     
 
 class FCSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
     patient_condition = PatientConditionSerializer()
 
     class Meta:
         model = FC
-        fields = [
-            'referrer', 'patient_name', 'age', 'gender',
-            'address', 'mobile_no', 'patient_condition', 'Opinion'
-        ]
+        fields = "__all__"
 
     def create(self, validated_data):
         condition_data = validated_data.pop('patient_condition')
@@ -201,4 +205,36 @@ class FCSerializer(serializers.ModelSerializer):
 
         fc_instance = FC.objects.create(patient_condition=patient_condition, **validated_data)
         return fc_instance
+    def update(self, instance, validated_data):
+        # Extract patient_condition data from validated data
+        condition_data = validated_data.pop('patient_condition', {})
 
+        # Handle the many-to-many fields (complaints, past_history, personal_H_O)
+        complaints = condition_data.pop('complaints', [])
+        past_history = condition_data.pop('past_history', [])
+        personal_H_O = condition_data.pop('personal_H_O', [])
+
+        # Update the PatientCondition instance
+        patient_condition = instance.patient_condition
+        for attr, value in condition_data.items():
+            setattr(patient_condition, attr, value)
+
+        # Set the many-to-many relationships for the updated PatientCondition instance
+        if complaints:
+            patient_condition.complaints.set(complaints)
+        if past_history:
+            patient_condition.past_history.set(past_history)
+        if personal_H_O:
+            patient_condition.personal_H_O.set(personal_H_O)
+
+        patient_condition.save()
+
+        # Update other fields in FC model
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+
+        return instance
+
+    
