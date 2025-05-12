@@ -1,0 +1,164 @@
+from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import * 
+from .serializers import * 
+# Create your views here.
+
+
+class test(APIView):
+    def get(self,request):
+        return Response({"msg":"Done"})
+
+
+
+class bed_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = bed.objects.get(id=id)
+                serializer = bed_serializers(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except bed.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = bed.objects.all().order_by("-id")
+            serializer = bed_serializers(uid, many=True)
+            return Response({'status': 'success', 'data': serializer.data})
+
+    def post(self, request):
+        serializer = bed_serializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = bed.objects.get(id=id)
+        except bed.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = bed_serializers(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = bed.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except bed.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        
+
+
+class ipd_view(APIView):
+    def get(self, request, id=None , bed_id=None):
+        if id:
+            try:
+                uid = ipd.objects.get(id=id)
+                serializer = ipd_serializers(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except ipd.DoesNotExist:
+                return Response({'status': "Invalid"})
+        elif bed_id:
+            try:
+                uid = ipd.objects.filter(bed_data__id=bed_id)
+        
+                serializer = ipd_serializers(uid,many=True)
+                return Response({'status': 'success', 'data': serializer.data})
+            except ipd.DoesNotExist:
+                return Response({'status': "Invalid"})    
+        else:
+            uid = ipd.objects.all().order_by("-id")
+            serializer = ipd_serializers(uid, many=True)
+            return Response({'status': 'success', 'data': serializer.data})
+
+    def post(self, request):
+        serializer = ipd_serializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = ipd.objects.get(id=id)
+        except ipd.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = ipd_serializers(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = ipd.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except ipd.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+
+
+
+class scalp_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = scalp.objects.get(id=id)
+                serializer = scalp_serializers(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except scalp.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = scalp.objects.all().order_by("-id")
+            serializer = scalp_serializers(uid, many=True)
+            return Response({'status': 'success', 'data': serializer.data})
+
+    def post(self, request):
+        serializer = scalp_serializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = scalp.objects.get(id=id)
+        except scalp.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = scalp_serializers(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = scalp.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except scalp.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        

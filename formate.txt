@@ -1,0 +1,44 @@
+
+1 : Bed API : 
+
+Formate : 
+
+{"name":"Bed 1"}
+
+
+2 : Ipd API : 
+
+Formate : 
+
+{
+  "bed_data": 1,
+  "sr_no": "SR12345",
+  "date": "2025-05-12",
+  "datetime_admission": "2025-05-12 10:30:00",
+  "patient_name": "John Doe",
+  "age": 45,
+  "gender": "Male",
+  "address": "123 Main Street, Cityname",
+  "mobile": 9876543210,
+ "datetime_discharge": "2025-05-15 14:00:00",
+  "dd_note": "Patient stable and discharged"
+
+}
+
+
+3  : Scalp API
+
+Formate : 
+
+{
+  "sr_no": "SCALP123",
+  "date": "2025-05-12",
+  "datetime_admission": "2025-05-12 09:00:00",
+  "patient_name": "Jane Smith",
+  "age": 32,
+  "gender": "Female",
+  "address": "456 Park Avenue, Cityname",
+  "mobile": 9876543211,
+  "datetime_discharge": "2025-05-13 16:30:00",
+  "fees": 1500
+}
