@@ -248,6 +248,7 @@ class admin_login_serializers(serializers.Serializer):
     email=serializers.CharField(max_length=50,required=False)
     mobile_no = serializers.IntegerField(required=False)
     password=serializers.CharField(max_length=50,required=True)
+    type=serializers.CharField(max_length=50,required=True)
     timestamp = serializers.SerializerMethodField()
 
     class Meta:
