@@ -83,5 +83,12 @@ class FC(models.Model):
     Opinion = models.TextField()
 
 
-
+#==============admin_login==========================
+class admin_login(models.Model):
+    email=models.EmailField(max_length=255,blank=True,null=True)
+    mobile_no = models.BigIntegerField(blank=True,null=True)
+    password=models.CharField(max_length=255,blank=True,null=True)
+    timestamp = models.DateTimeField(auto_now_add=True,blank=True,null=True)
+    def __str__(self):
+        return self.email
 

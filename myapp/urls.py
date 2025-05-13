@@ -43,6 +43,9 @@ urlpatterns = [
     path('fc/', fc_view.as_view()),
     path('fc/<int:id>/', fc_view.as_view()),
 
+    path('admin_login/', admin_login_view.as_view()),
+    # path('admin_login/<int:id>/', admin_login_view.as_view()),
+
     
 
 ]

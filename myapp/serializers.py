@@ -237,4 +237,35 @@ class FCSerializer(serializers.ModelSerializer):
 
         return instance
 
-    
+
+
+
+
+#-------------admin_login_serializers ----------------
+import pytz
+class admin_login_serializers(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    email=serializers.CharField(max_length=50,required=False)
+    mobile_no = serializers.IntegerField(required=False)
+    password=serializers.CharField(max_length=50,required=True)
+    timestamp = serializers.SerializerMethodField()
+
+    class Meta:
+        models=admin_login
+        fields ='__all__'
+        exclude = ('id',)
+        read_only_fields = ['timestamp']
+    def get_timestamp(self, obj):
+        local_tz = pytz.timezone('Asia/Kolkata')  # Set to your desired time zone
+        local_dt = obj.timestamp.astimezone(local_tz)
+        return local_dt.strftime('%Y-%m-%d %H:%M:%S')
+
+    # def create(self, validated_data):
+    #     return admin_login.objects.create(**validated_data)
+
+    # def update(self, instance, validated_data):
+    #     instance.email=validated_data.get('email',instance.email)
+    #     instance.password=validated_data.get('password',instance.password)
+
+    #     instance.save()
+    #     return instance

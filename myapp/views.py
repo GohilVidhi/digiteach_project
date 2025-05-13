@@ -359,3 +359,92 @@ class fc_view(APIView):
                 return Response({'status': "invalid id"})
         else:
             return Response({'status': "invalid data"})
+
+
+
+
+
+#======================admin_login_view=======================
+from rest_framework_simplejwt.tokens import RefreshToken        
+class admin_login_view(APIView):
+    # def get(self,request,id=None , email=None):
+    #     if id:
+
+    #         try:
+    #             uid=admin_login.objects.get(id=id)
+    #             serializer=admin_login_serializers(uid)
+    #             return Response({'status':'success','data':serializer.data})
+    #         except:
+    #             return Response({'status':"Invalid email"})
+    #     elif email:
+
+    #         try:
+    #             uid=admin_login.objects.get(email=email)
+    #             serializer=admin_login_serializers(uid)
+    #             return Response({'status':'success','data':serializer.data})
+    #         except:
+    #             return Response({'status':"Invalid email"})
+    #     else:
+    #         uid=admin_login.objects.all().order_by("-id")
+    #         serializer=admin_login_serializers(uid,many=True)
+    #         return Response({'status':'success','data':serializer.data})
+
+    def post(self, request):
+        serializer = admin_login_serializers(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data.get('email', None)
+            mobile_no = serializer.validated_data.get('mobile_no', None)
+            password = serializer.validated_data.get('password')
+
+            # Try to get the user by email or mobile
+            try:
+                if email:
+                    user = admin_login.objects.get(email=email)
+                elif mobile_no:
+                    user = admin_login.objects.get(mobile_no=mobile_no)
+                else:
+                    return Response({'status': 'email or mobile is required'}, status=400)
+
+                # Raw password match (replace with `check_password` if using hashing)
+                if user.password == password:
+                    refresh = RefreshToken.for_user(user)
+                    response_serializer = admin_login_serializers(user)
+                    return Response({
+                        'status': 'success',
+                        'data': response_serializer.data,
+                        'token': str(refresh.access_token)
+                    })
+                else:
+                    return Response({'status': 'invalid password'})
+
+            except admin_login.DoesNotExist:
+                return Response({'status': 'invalid email or mobile'})
+
+        return Response({'status': 'invalid data', 'errors': serializer.errors})
+
+
+    # def patch(self,request,id=None):
+    #     try:
+    #         uid=admin_login.objects.get(id=id)
+    #     except:
+    #         return Response({'status':"invalid email"})
+    #     serializer=admin_login_serializers(uid,data=request.data,partial=True)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response({'status':'success','data':serializer.data})
+    #     else:
+    #         return Response({'status':"invalid email"})
+    # def delete(self,request,id=None,email=None):
+    #     if id:
+    #         try:
+    #             uid=admin_login.objects.get(id=id)
+    #             uid.delete()
+    #             return Response({'status':'Deleted data'})
+    #         except:
+    #             return Response({'status':"invalid id"})
+    #     elif email:
+    #         del request.session['email']
+    #         return Response({'status': 'Logged out successfully'})
+
+    #     else:
+    #         return Response({'status':"invalid data"})
