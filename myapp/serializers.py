@@ -270,3 +270,127 @@ class admin_login_serializers(serializers.Serializer):
 
     #     instance.save()
     #     return instance
+
+
+
+
+
+   
+#=====================ServiceSerializer==========
+class ServiceSerializer(serializers.ModelSerializer):
+    service_name=serializers.CharField(max_length=250,required=True)
+    service_price = serializers.FloatField(required=True )
+    class Meta:
+        model = Service
+        fields = '__all__'
+
+    def create(self, validated_data):
+        return Service.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.service_name = validated_data.get('service_name', instance.service_name)
+        instance.service_price = validated_data.get('service_price', instance.service_price)
+        instance.save()
+        return instance
+
+#===================OPDSerializer===========================
+class OPDSerializer(serializers.ModelSerializer):
+    service_id = serializers.SlugRelatedField(slug_field='id', queryset=Service.objects.all(),many=True, required=True)
+    doctor_data = serializers.SlugRelatedField(slug_field='id', queryset=Doctor.objects.all(), required=True)
+    sr_no = serializers.CharField(max_length=100,required=False)
+    patient_name = serializers.CharField(max_length=100,required=False)
+    age = serializers.IntegerField(required=False)
+    mobile_no = serializers.IntegerField(required=False)
+    gender = serializers.CharField(max_length=100,required=False)
+    address = serializers.CharField(max_length=250,required=False)
+    payment_mode = serializers.CharField(max_length=250,required=False)
+    prescription = serializers.CharField(max_length=250,required=False)
+    date = serializers.SerializerMethodField()
+    total_amount = serializers.FloatField(required=False)
+
+
+    class Meta:
+        model = OPD
+        fields = '__all__'
+        read_only_fields = ['date']
+    def get_date(self, obj):
+        local_tz = pytz.timezone('Asia/Kolkata')  # Set to your desired time zone
+        local_dt = obj.date.astimezone(local_tz)
+        return local_dt.strftime('%Y-%m-%d %H:%M:%S')        
+        
+    def create(self, validated_data):
+        service_data = validated_data.pop('service_id', [])
+        opd_instance = OPD.objects.create(**validated_data)
+        opd_instance.service_id.set(service_data)
+        return opd_instance
+
+    def update(self, instance, validated_data):
+        instance.date = validated_data.get('date', instance.date)
+        instance.sr_no = validated_data.get('sr_no', instance.sr_no)
+        instance.patient_name = validated_data.get('patient_name', instance.patient_name)
+        instance.age = validated_data.get('age', instance.age)
+        instance.gender = validated_data.get('gender', instance.gender)
+        instance.address = validated_data.get('address', instance.address)
+        instance.mobile_no = validated_data.get('mobile_no', instance.mobile_no)
+        instance.payment_mode = validated_data.get('payment_mode', instance.payment_mode)
+        instance.prescription = validated_data.get('prescription', instance.prescription)
+        instance.doctor_data = validated_data.get('doctor_data', instance.doctor_data)
+        instance.total_amount = validated_data.get('total_amount', instance.total_amount)
+        service_data = validated_data.pop('service_id', None)
+        if service_data is not None:
+            instance.service_id.set(service_data)
+        instance.save()
+        return instance
+    
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["service_id"] = ServiceSerializer(instance.service_id,many=True).data  
+        representation["doctor_data"] = DoctorSerializer(instance.doctor_data).data  
+        return representation           
+    
+#====================SpecializationSerializer=====================
+class SpecializationSerializer(serializers.ModelSerializer):
+    specialization_name = serializers.CharField(max_length=100,required=False)
+    class Meta:
+        model = Specialization
+        fields = '__all__'
+        
+    def create(self, validated_data):
+        return Specialization.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.specialization_name = validated_data.get('specialization_name', instance.specialization_name)
+        instance.save()
+        return instance        
+
+#=================DoctorSerializer==================================
+class DoctorSerializer(serializers.ModelSerializer):
+    doctor_name = serializers.CharField(max_length=100,required=False)
+    specialization_id = serializers.SlugRelatedField(slug_field='id', queryset=Specialization.objects.all(), required=True)
+    address = serializers.CharField(max_length=250,required=False)
+    mobile_no = serializers.IntegerField(required=False)
+    email = serializers.EmailField(required=False)
+    date_of_joining = serializers.SerializerMethodField()
+    class Meta:
+        model = Doctor
+        fields = '__all__'
+        read_only_fields = ['date_of_joining']
+    def get_date_of_joining(self, obj):
+        local_tz = pytz.timezone('Asia/Kolkata')  # Set to your desired time zone
+        local_dt = obj.date_of_joining.astimezone(local_tz)
+        return local_dt.strftime('%Y-%m-%d %H:%M:%S')  
+    
+    def create(self, validated_data):
+        return Doctor.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.doctor_name = validated_data.get('doctor_name', instance.doctor_name)
+        instance.specialization_id = validated_data.get('specialization_id', instance.specialization_id)
+        instance.save()
+        return instance
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["specialization_id"] = SpecializationSerializer(instance.specialization_id).data  
+        return representation

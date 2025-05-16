@@ -44,7 +44,21 @@ urlpatterns = [
     path('fc/<int:id>/', fc_view.as_view()),
 
     path('admin_login/', admin_login_view.as_view()),
-    # path('admin_login/<int:id>/', admin_login_view.as_view()),
+    path('admin_login/<int:id>/', admin_login_view.as_view()),
+    path('admin_login/<str:email>/', admin_login_view.as_view()),
+
+    path('service/', Service_view.as_view()),
+    path('service/<int:id>/', Service_view.as_view()),
+    
+    path('specialization/', Specialization_view.as_view()),
+    path('specialization/<int:id>/', Specialization_view.as_view()),
+    
+    path('doctor/', Doctor_view.as_view()),
+    path('doctor/<int:id>/', Doctor_view.as_view()),
+
+    path('opd/', OPD_view.as_view()),
+    path('opd/<int:id>/', OPD_view.as_view()),
+    path('opd/doctor/<int:doctor_id>/', OPD_view.as_view()),
 
     
 

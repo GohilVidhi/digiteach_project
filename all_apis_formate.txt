@@ -1,0 +1,234 @@
+
+1 : Bed API : 
+
+Formate : 
+
+{"name":"Bed 1"}
+
+
+2 : Ipd API : 
+
+Formate : 
+
+{
+  "bed_data": 1,
+  "sr_no": "SR12345",
+  "date": "2025-05-12",
+  "datetime_admission": "2025-05-12 10:30:00",
+  "patient_name": "John Doe",
+  "age": 45,
+  "gender": "Male",
+  "address": "123 Main Street, Cityname",
+  "mobile": 9876543210,
+ "datetime_discharge": "2025-05-15 14:00:00",
+  "dd_note": "Patient stable and discharged"
+
+}
+
+
+3  : Scalp API
+
+Formate : 
+
+{
+  "sr_no": "SCALP123",
+  "date": "2025-05-12",
+  "datetime_admission": "2025-05-12 09:00:00",
+  "patient_name": "Jane Smith",
+  "age": 32,
+  "gender": "Female",
+  "address": "456 Park Avenue, Cityname",
+  "mobile": 9876543211,
+  "datetime_discharge": "2025-05-13 16:30:00",
+  "fees": 1500
+}
+
+
+
+4 : Fc API : 
+
+Formate : 
+
+{
+  "referrer": "Dr. Ahuja",
+  "patient_name": "Raj Mehta",
+  "age": 35,
+  "gender": "Male",
+  "address": "Sector 12, Mumbai",
+  "mobile_no": 9998898876,
+  "patient_condition": {
+    "complaints": [1, 2],
+    "past_history": [1],
+    "personal_H_O": [1, 2],
+    "poller": false,
+    "icterus": false,
+    "LAP": "Normal",
+    "clubbing": false,
+    "cyanosis": false
+  },
+  "Opinion": "Admit under observation"
+}
+
+
+
+#--------------------------------------------------------------
+5  : past_history API
+
+GET : https://hayatplus.pythonanywhere.com/past_history/
+
+POST : https://hayatplus.pythonanywhere.com/past_history/
+
+PATCH : https://hayatplus.pythonanywhere.com/past_history/pass ID/
+
+DELETE : https://hayatplus.pythonanywhere.com/past_history/pass ID/
+
+Formate : 
+{
+  "name": "history11",
+}
+#----------------------------------------------------------------
+6  : personal_H_O API
+
+GET : https://hayatplus.pythonanywhere.com/personal_ho/
+
+POST : https://hayatplus.pythonanywhere.com/personal_ho/
+
+PATCH : https://hayatplus.pythonanywhere.com/personal_ho/pass ID/
+
+DELETE : https://hayatplus.pythonanywhere.com/personal_ho/pass ID/
+
+Formate : 
+{
+  "name": "personal12",
+}
+
+#--------------------------------------------------------------
+7 : Fc API : 
+
+GET : https://hayatplus.pythonanywhere.com/fc/
+
+POST : https://hayatplus.pythonanywhere.com/fc/
+
+PATCH : https://hayatplus.pythonanywhere.com/fc/pass ID/
+
+DELETE : https://hayatplus.pythonanywhere.com/fc/pass ID/
+
+Formate : 
+{
+  "referrer": "Dr. Ahuja",
+  "patient_name": "Raj Mehta",
+  "age": 35,
+  "gender": "Male",
+  "address": "Sector 12, Mumbai",
+  "mobile_no": 9998898876,
+  "patient_condition": {
+    "complaints": [1, 2],       <- pass complaints multiple ID
+    "past_history": [1],        <- pass past_history multiple ID
+    "personal_H_O": [1, 2],     <- pass personal_H_O multiple ID
+    "poller": false,
+    "icterus": false,
+    "LAP": "Normal",
+    "clubbing": false,
+    "cyanosis": false
+  },
+  "Opinion": "Admit under observation"
+}
+
+#--------------------------------------------------------------
+8 : Admin Login :
+
+POST : https://hayatplus.pythonanywhere.com/admin_login/
+
+Formate : 
+
+{"email":"admin@gmail.com",  <- pass email
+"password":"pass password"}
+
+
+{"mobile_no":"6598563256", <- pass mobile number
+"password":"pass password"}
+
+#--------------------------------------------------------------
+
+9 : Service API : 
+
+GET : https://hayatplus.pythonanywhere.com/service/
+
+POST : https://hayatplus.pythonanywhere.com/service/
+
+PATCH : https://hayatplus.pythonanywhere.com/service/pass ID/
+
+DELETE : https://hayatplus.pythonanywhere.com/service/pass ID/
+
+Formate : 
+
+{
+  "service_name": "ser2",
+  "service_price": 3.0
+}
+#--------------------------------------------------------------
+
+10 : Specialization API : 
+
+GET : https://hayatplus.pythonanywhere.com/specialization/
+
+POST : https://hayatplus.pythonanywhere.com/specialization/
+
+PATCH : https://hayatplus.pythonanywhere.com/specialization/pass ID/
+
+DELETE : https://hayatplus.pythonanywhere.com/specialization/pass ID/
+
+Formate : 
+{
+  "specialization_name": "s3"
+}
+#--------------------------------------------------------------
+
+11 : Doctor API : 
+
+GET : https://hayatplus.pythonanywhere.com/doctor/
+
+POST : https://hayatplus.pythonanywhere.com/doctor/
+
+PATCH : https://hayatplus.pythonanywhere.com/doctor/pass ID/
+
+DELETE : https://hayatplus.pythonanywhere.com/doctor/pass ID/
+
+
+Formate : 
+
+
+ {
+            "doctor_name": "dr.vvvv",
+            "specialization_id":1,      <-- Specialization id
+            "address": "123 Gandhi Marg, Ahmedabad",
+            "mobile_no": 9876543210,
+            "email": "asha.mehta@example.com"
+        }
+#--------------------------------------------------------------
+
+12 : Opd API : 
+
+GET : https://hayatplus.pythonanywhere.com/opd/
+
+POST : https://hayatplus.pythonanywhere.com/opd/
+
+PATCH : https://hayatplus.pythonanywhere.com/opd/pass ID/
+
+DELETE : https://hayatplus.pythonanywhere.com/opd/pass ID/
+
+
+Formate : 
+
+{
+            "service_id": [1,2],    <-- multiple Service id
+            "doctor_data":1         <-- doctor id  
+            "sr_no": "13",
+            "patient_name": "vidhi gohil",
+            "age": 26,
+            "mobile_no": 6598523659,
+            "gender": "female",
+            "address": "ssss",
+            "payment_mode": "UPI",
+            "prescription": "ddd"
+        }

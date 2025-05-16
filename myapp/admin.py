@@ -11,4 +11,8 @@ admin.site.register(personal_H_O)
 admin.site.register(PatientCondition)
 admin.site.register(FC)
 admin.site.register(admin_login)
+admin.site.register(Service)
+admin.site.register(Specialization)
+admin.site.register(Doctor)
+admin.site.register(OPD)
 

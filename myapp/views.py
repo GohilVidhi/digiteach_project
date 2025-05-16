@@ -11,6 +11,29 @@ class test(APIView):
         return Response({"msg":"Done"})
 
 
+# ===============pagination code==========================
+
+from rest_framework.pagination import PageNumberPagination
+class CustomPagination(PageNumberPagination):
+    page_size = 1  # You can change this number
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+    def get_paginated_response(self, data):
+        return Response({
+           
+            'count': self.page.paginator.count,
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'data': data
+        })
+def get_paginated_result(queryset, request, serializer_class, paginator_class):
+    paginator = paginator_class()
+    page = paginator.paginate_queryset(queryset, request)
+    serializer = serializer_class(page, many=True)
+    return paginator.get_paginated_response(serializer.data) 
+
+# ===============pagination code end==========================
+
 
 class bed_view(APIView):
     def get(self, request, id=None):
@@ -23,8 +46,9 @@ class bed_view(APIView):
                 return Response({'status': "Invalid"})
         else:
             uid = bed.objects.all().order_by("-id")
-            serializer = bed_serializers(uid, many=True)
-            return Response({'status': 'success', 'data': serializer.data})
+            # serializer = bed_serializers(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, bed_serializers, CustomPagination)
 
     def post(self, request):
         serializer = bed_serializers(data=request.data)
@@ -73,14 +97,17 @@ class ipd_view(APIView):
             try:
                 uid = ipd.objects.filter(bed_data__id=bed_id)
         
-                serializer = ipd_serializers(uid,many=True)
-                return Response({'status': 'success', 'data': serializer.data})
+                # serializer = ipd_serializers(uid,many=True)
+                # return Response({'status': 'success', 'data': serializer.data})
+                return get_paginated_result(uid, request, ipd_serializers, CustomPagination)
+
             except ipd.DoesNotExist:
                 return Response({'status': "Invalid"})    
         else:
             uid = ipd.objects.all().order_by("-id")
-            serializer = ipd_serializers(uid, many=True)
-            return Response({'status': 'success', 'data': serializer.data})
+            # serializer = ipd_serializers(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, ipd_serializers, CustomPagination)
 
     def post(self, request):
         serializer = ipd_serializers(data=request.data)
@@ -127,8 +154,10 @@ class scalp_view(APIView):
                 return Response({'status': "Invalid"})
         else:
             uid = scalp.objects.all().order_by("-id")
-            serializer = scalp_serializers(uid, many=True)
-            return Response({'status': 'success', 'data': serializer.data})
+            # serializer = scalp_serializers(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, scalp_serializers, CustomPagination)
+
 
     def post(self, request):
         serializer = scalp_serializers(data=request.data)
@@ -179,8 +208,10 @@ class complaint_view(APIView):
                 return Response({'status': "Invalid"})
         else:
             uid = complaint.objects.all().order_by("-id")
-            serializer = complaint_serializers(uid, many=True)
-            return Response({'status': 'success', 'data': serializer.data})
+            # serializer = complaint_serializers(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, complaint_serializers, CustomPagination)
+
 
     def post(self, request):
         serializer = complaint_serializers(data=request.data)
@@ -228,8 +259,11 @@ class past_history_view(APIView):
                 return Response({'status': "Invalid"})
         else:
             uid = past_history.objects.all().order_by("-id")
-            serializer = past_history_serializers(uid, many=True)
-            return Response({'status': 'success', 'data': serializer.data})
+            # serializer = past_history_serializers(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, past_history_serializers, CustomPagination)
+
+            
 
     def post(self, request):
         serializer = past_history_serializers(data=request.data)
@@ -278,8 +312,10 @@ class personal_H_O_view(APIView):
                 return Response({'status': "Invalid"})
         else:
             uid = personal_H_O.objects.all().order_by("-id")
-            serializer = personal_H_O_serializers(uid, many=True)
-            return Response({'status': 'success', 'data': serializer.data})
+            # serializer = personal_H_O_serializers(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, personal_H_O_serializers, CustomPagination)
+
 
     def post(self, request):
         serializer = personal_H_O_serializers(data=request.data)
@@ -325,8 +361,10 @@ class fc_view(APIView):
                 return Response({'status': "Invalid"})
         else:
             uid = FC.objects.all().order_by("-id")
-            serializer = FCSerializer(uid, many=True)
-            return Response({'status': 'success', 'data': serializer.data})
+            # serializer = FCSerializer(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, FCSerializer, CustomPagination)
+
 
     def post(self, request):
         serializer = FCSerializer(data=request.data)
@@ -367,27 +405,27 @@ class fc_view(APIView):
 #======================admin_login_view=======================
 from rest_framework_simplejwt.tokens import RefreshToken        
 class admin_login_view(APIView):
-    # def get(self,request,id=None , email=None):
-    #     if id:
+    def get(self,request,id=None , email=None):
+        if id:
 
-    #         try:
-    #             uid=admin_login.objects.get(id=id)
-    #             serializer=admin_login_serializers(uid)
-    #             return Response({'status':'success','data':serializer.data})
-    #         except:
-    #             return Response({'status':"Invalid email"})
-    #     elif email:
+            try:
+                uid=admin_login.objects.get(id=id)
+                serializer=admin_login_serializers(uid)
+                return Response({'status':'success','data':serializer.data})
+            except:
+                return Response({'status':"Invalid email"})
+        elif email:
 
-    #         try:
-    #             uid=admin_login.objects.get(email=email)
-    #             serializer=admin_login_serializers(uid)
-    #             return Response({'status':'success','data':serializer.data})
-    #         except:
-    #             return Response({'status':"Invalid email"})
-    #     else:
-    #         uid=admin_login.objects.all().order_by("-id")
-    #         serializer=admin_login_serializers(uid,many=True)
-    #         return Response({'status':'success','data':serializer.data})
+            try:
+                uid=admin_login.objects.get(email=email)
+                serializer=admin_login_serializers(uid)
+                return Response({'status':'success','data':serializer.data})
+            except:
+                return Response({'status':"Invalid email"})
+        else:
+            uid=admin_login.objects.all().order_by("-id")
+            serializer=admin_login_serializers(uid,many=True)
+            return Response({'status':'success','data':serializer.data})
 
     def post(self, request):
         serializer = admin_login_serializers(data=request.data)
@@ -448,3 +486,209 @@ class admin_login_view(APIView):
 
     #     else:
     #         return Response({'status':"invalid data"})
+
+#==================
+class Service_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = Service.objects.get(id=id)
+                serializer = ServiceSerializer(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except Service.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = Service.objects.all().order_by("-id")
+            # serializer = ServiceSerializer(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, ServiceSerializer, CustomPagination)
+
+
+    def post(self, request):
+        serializer = ServiceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = Service.objects.get(id=id)
+        except Service.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = ServiceSerializer(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = Service.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except Service.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        
+#=============
+class Specialization_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = Specialization.objects.get(id=id)
+                serializer = SpecializationSerializer(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except Specialization.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = Specialization.objects.all().order_by("-id")
+            # serializer = SpecializationSerializer(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, SpecializationSerializer, CustomPagination)
+
+
+    def post(self, request):
+        serializer = SpecializationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = Specialization.objects.get(id=id)
+        except Specialization.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = SpecializationSerializer(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = Specialization.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except Specialization.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        
+        
+        
+#===================
+class Doctor_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = Doctor.objects.get(id=id)
+                serializer = DoctorSerializer(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except Doctor.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = Doctor.objects.all().order_by("-id")
+            # serializer = DoctorSerializer(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, DoctorSerializer, CustomPagination)
+            
+    def post(self, request):
+        serializer = DoctorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = Doctor.objects.get(id=id)
+        except Doctor.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = DoctorSerializer(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = Doctor.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except Doctor.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        
+#========================
+class OPD_view(APIView):
+    def get(self, request, id=None,doctor_id=None):
+        if id:
+            try:
+                uid = OPD.objects.get(id=id)
+                serializer = OPDSerializer(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except OPD.DoesNotExist:
+                return Response({'status': "Invalid"})
+        elif doctor_id:
+            try:
+                uid = OPD.objects.filter(doctor_data__id=doctor_id)
+                # serializer = OPDSerializer(uid,many=True)
+                # return Response({'status': 'success', 'data': serializer.data})
+                return get_paginated_result(uid, request, OPDSerializer, CustomPagination)
+            except OPD.DoesNotExist:
+                return Response({'status': "Invalid"})    
+        else:
+            uid = OPD.objects.all().order_by("-id")
+            # serializer = OPDSerializer(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, OPDSerializer, CustomPagination)
+            
+
+    def post(self, request):
+        serializer = OPDSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = OPD.objects.get(id=id)
+        except OPD.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = OPDSerializer(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = OPD.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except OPD.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+

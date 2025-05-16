@@ -93,3 +93,50 @@ class admin_login(models.Model):
     def __str__(self):
         return self.email
 
+
+  
+
+#=========Service=========
+class Service(models.Model):
+    service_name = models.CharField(max_length=100,blank=True,null=True)
+    service_price = models.FloatField(blank=True,null=True)
+
+    def __str__(self):
+        return self.service_name
+
+#============OPD=================
+class OPD(models.Model):
+    sr_no = models.CharField(max_length=250,blank=True,null=True)
+    date = models.DateTimeField(auto_now_add=True,blank=True,null=True)
+    patient_name = models.CharField(max_length=100,blank=True,null=True)
+    age = models.IntegerField()
+    gender = models.CharField(max_length=10,blank=True,null=True)
+    address = models.TextField()
+    mobile_no = models.BigIntegerField(blank=True,null=True)
+    service_id = models.ManyToManyField(Service)
+    doctor_data=models.ForeignKey("Doctor",on_delete=models.CASCADE,blank=True,null=True)
+    payment_mode = models.CharField(max_length=250,blank=True,null=True)
+    prescription = models.TextField()
+    total_amount=models.FloatField(blank=True,null=True)
+
+    def __str__(self):
+        return f"{self.patient_name}"
+
+#==========Specialization=========================
+class Specialization(models.Model):
+    specialization_name = models.CharField(max_length=100,blank=True,null=True)
+
+    def __str__(self):
+        return self.specialization_name
+
+#================Doctor================
+class Doctor(models.Model):
+    doctor_name = models.CharField(max_length=100,blank=True,null=True)
+    specialization_id = models.ForeignKey(Specialization, on_delete=models.CASCADE,blank=True,null=True)
+    mobile_no = models.BigIntegerField(blank=True,null=True)
+    address = models.TextField(blank=True,null=True)
+    email=models.EmailField(blank=True,null=True)
+    date_of_joining=models.DateTimeField(auto_now_add=True,blank=True,null=True)
+    
+    def __str__(self):
+        return self.doctor_name
