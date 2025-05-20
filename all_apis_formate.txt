@@ -233,3 +233,28 @@ Formate :
     "prescription": "ddd"
     "total_amount":10.00
 }
+
+
+
+#--------------------------------------------------------------
+
+13 : staff API : 
+
+GET : https://hayatplus.pythonanywhere.com/staff/
+
+POST : https://hayatplus.pythonanywhere.com/staff/
+
+PATCH : https://hayatplus.pythonanywhere.com/staff/pass ID/
+
+DELETE : https://hayatplus.pythonanywhere.com/staff/pass ID/
+
+
+Formate : 
+
+{
+  "staff_name": "John Doe",
+  "department": "HR",
+  "mobile_no": "1234567890",
+  "email": "john.doe@example.com",
+  "address": "123 Main Street, City, Country"
+}
