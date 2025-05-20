@@ -397,7 +397,7 @@ class DoctorSerializer(serializers.Serializer):
     
 
 
-#===================OPDSerializer===========================
+#===================StaffSerializer===========================
 class StaffSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
     staff_name = serializers.CharField(max_length=100, required=True)
