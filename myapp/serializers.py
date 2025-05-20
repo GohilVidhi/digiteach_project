@@ -164,7 +164,7 @@ class personal_H_O_serializers(serializers.Serializer):
         return instance     
 
 
-class PatientConditionSerializer(serializers.ModelSerializer):
+class PatientConditionSerializer(serializers.Serializer):
     complaints = serializers.PrimaryKeyRelatedField(queryset=complaint.objects.all(), many=True)
     past_history = serializers.PrimaryKeyRelatedField(queryset=past_history.objects.all(), many=True)
     personal_H_O = serializers.PrimaryKeyRelatedField(queryset=personal_H_O.objects.all(), many=True)
@@ -182,7 +182,7 @@ class PatientConditionSerializer(serializers.ModelSerializer):
         representation["personal_H_O"] = personal_H_O_serializers(instance.personal_H_O,many=True).data  
         return representation     
 
-class FCSerializer(serializers.ModelSerializer):
+class FCSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
     patient_condition = PatientConditionSerializer()
 
@@ -277,7 +277,7 @@ class admin_login_serializers(serializers.Serializer):
 
    
 #=====================ServiceSerializer==========
-class ServiceSerializer(serializers.ModelSerializer):
+class ServiceSerializer(serializers.Serializer):
     service_name=serializers.CharField(max_length=250,required=True)
     service_price = serializers.FloatField(required=True )
     class Meta:
@@ -294,7 +294,7 @@ class ServiceSerializer(serializers.ModelSerializer):
         return instance
 
 #===================OPDSerializer===========================
-class OPDSerializer(serializers.ModelSerializer):
+class OPDSerializer(serializers.Serializer):
     service_id = serializers.SlugRelatedField(slug_field='id', queryset=Service.objects.all(),many=True, required=True)
     doctor_data = serializers.SlugRelatedField(slug_field='id', queryset=Doctor.objects.all(), required=True)
     sr_no = serializers.CharField(max_length=100,required=False)
@@ -350,7 +350,7 @@ class OPDSerializer(serializers.ModelSerializer):
         return representation           
     
 #====================SpecializationSerializer=====================
-class SpecializationSerializer(serializers.ModelSerializer):
+class SpecializationSerializer(serializers.Serializer):
     specialization_name = serializers.CharField(max_length=100,required=False)
     class Meta:
         model = Specialization
@@ -365,7 +365,7 @@ class SpecializationSerializer(serializers.ModelSerializer):
         return instance        
 
 #=================DoctorSerializer==================================
-class DoctorSerializer(serializers.ModelSerializer):
+class DoctorSerializer(serializers.Serializer):
     doctor_name = serializers.CharField(max_length=100,required=False)
     specialization_id = serializers.SlugRelatedField(slug_field='id', queryset=Specialization.objects.all(), required=True)
     address = serializers.CharField(max_length=250,required=False)
@@ -394,3 +394,39 @@ class DoctorSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation["specialization_id"] = SpecializationSerializer(instance.specialization_id).data  
         return representation
+    
+
+
+#===================OPDSerializer===========================
+class StaffSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    staff_name = serializers.CharField(max_length=100, required=True)
+    department = serializers.CharField(max_length=100, required=True)
+    mobile_no = serializers.CharField(max_length=15, required=True)
+    email = serializers.EmailField(required=True)
+    address = serializers.CharField(required=True)
+    date_of_joining = serializers.SerializerMethodField()
+
+
+    class Meta:
+        model = Staff
+        fields = '__all__'
+        read_only_fields = ['date_of_joining']
+    def get_date_of_joining(self, obj):
+        local_tz = pytz.timezone('Asia/Kolkata')  # Set to your desired time zone
+        local_dt = obj.date_of_joining.astimezone(local_tz)
+        return local_dt.strftime('%Y-%m-%d %H:%M:%S')        
+        
+    def create(self, validated_data):
+        return Staff.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.staff_name = validated_data.get('staff_name', instance.staff_name)
+        instance.department = validated_data.get('department', instance.department)
+        instance.mobile_no = validated_data.get('mobile_no', instance.mobile_no)
+        instance.email = validated_data.get('email', instance.email)
+        instance.address = validated_data.get('address', instance.address)
+        instance.date_of_joining = validated_data.get('date_of_joining', instance.date_of_joining)
+        instance.save()
+        return instance
+    

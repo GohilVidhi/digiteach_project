@@ -692,3 +692,52 @@ class OPD_view(APIView):
         else:
             return Response({'status': "invalid data"})
 
+
+
+#===================
+class Staff_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = Staff.objects.get(id=id)
+                serializer = StaffSerializer(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except Staff.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = Staff.objects.all().order_by("-id")
+            # serializer = StaffSerializer(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, StaffSerializer, CustomPagination)
+            
+    def post(self, request):
+        serializer = StaffSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = Staff.objects.get(id=id)
+        except Staff.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = StaffSerializer(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = Staff.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except Staff.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})

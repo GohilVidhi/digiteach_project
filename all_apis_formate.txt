@@ -221,14 +221,15 @@ DELETE : https://hayatplus.pythonanywhere.com/opd/pass ID/
 Formate : 
 
 {
-            "service_id": [1,2],    <-- multiple Service id
-            "doctor_data":1         <-- doctor id  
-            "sr_no": "13",
-            "patient_name": "vidhi gohil",
-            "age": 26,
-            "mobile_no": 6598523659,
-            "gender": "female",
-            "address": "ssss",
-            "payment_mode": "UPI",
-            "prescription": "ddd"
-        }
+    "service_id": [1,2],    <-- multiple Service id
+    "doctor_data":1         <-- doctor id  
+    "sr_no": "13",
+    "patient_name": "vidhi gohil",
+    "age": 26,
+    "mobile_no": 6598523659,
+    "gender": "female",
+    "address": "ssss",
+    "payment_mode": "UPI",
+    "prescription": "ddd"
+    "total_amount":10.00
+}

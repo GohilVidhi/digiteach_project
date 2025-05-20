@@ -60,6 +60,9 @@ urlpatterns = [
     path('opd/<int:id>/', OPD_view.as_view()),
     path('opd/doctor/<int:doctor_id>/', OPD_view.as_view()),
 
+    path('staff/', Staff_view.as_view()),
+    path('staff/<int:id>/', Staff_view.as_view()),
+
     
 
 ]

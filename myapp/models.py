@@ -140,3 +140,14 @@ class Doctor(models.Model):
     
     def __str__(self):
         return self.doctor_name
+    
+class Staff(models.Model):
+    staff_name = models.CharField(max_length=100)
+    department = models.CharField(max_length=100)
+    mobile_no = models.BigIntegerField()
+    email = models.EmailField()
+    address = models.TextField()
+    date_of_joining = models.DateTimeField(auto_now_add=True,blank=True,null=True)
+
+    def __str__(self):
+        return self.staff_name    
