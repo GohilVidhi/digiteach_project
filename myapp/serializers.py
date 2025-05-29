@@ -429,4 +429,21 @@ class StaffSerializer(serializers.Serializer):
         instance.date_of_joining = validated_data.get('date_of_joining', instance.date_of_joining)
         instance.save()
         return instance
+
+
+
+class ad_serializers(serializers.ModelSerializer):
+    class Meta:
+        model = ad
+        fields = ['id', 'file']
+    
+    def create(self, validated_data):
+        return ad.objects.create(**validated_data)
+         
+
+    def update(self, instance, validated_data):
+        # Handle file upload in the update method
+        instance.file = validated_data.get('file', instance.file)
+        instance.save()
+        return instance
     

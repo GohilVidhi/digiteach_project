@@ -151,3 +151,9 @@ class Staff(models.Model):
 
     def __str__(self):
         return self.staff_name    
+
+
+class ad(models.Model):
+    file=models.FileField(upload_to="ad")
+    
+

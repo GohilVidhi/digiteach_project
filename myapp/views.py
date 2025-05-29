@@ -741,3 +741,52 @@ class Staff_view(APIView):
                 return Response({'status': "invalid id"})
         else:
             return Response({'status': "invalid data"})
+
+
+# ===================
+class ad_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = ad.objects.get(id=id)
+                serializer = ad_serializers(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except ad.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = ad.objects.all().order_by("-id")
+            # serializer = ad_serializers(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, ad_serializers, CustomPagination)
+            
+    def post(self, request):
+        serializer = ad_serializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = ad.objects.get(id=id)
+        except ad.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = ad_serializers(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = ad.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except Staff.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})

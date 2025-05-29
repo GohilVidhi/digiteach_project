@@ -15,4 +15,6 @@ admin.site.register(Service)
 admin.site.register(Specialization)
 admin.site.register(Doctor)
 admin.site.register(OPD)
+admin.site.register(Staff)
+admin.site.register(ad)
 
