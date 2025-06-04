@@ -168,21 +168,35 @@ class PatientConditionSerializer(serializers.Serializer):
     complaints = serializers.PrimaryKeyRelatedField(queryset=complaint.objects.all(), many=True)
     past_history = serializers.PrimaryKeyRelatedField(queryset=past_history.objects.all(), many=True)
     personal_H_O = serializers.PrimaryKeyRelatedField(queryset=personal_H_O.objects.all(), many=True)
-
+    blood_pressure= serializers.CharField(required=False,allow_null=True, allow_blank=True)
+    pulse = serializers.CharField(required=False,allow_null=True, allow_blank=True)
+    blood_sugar= serializers.CharField(required=False,allow_null=True, allow_blank=True)
+    ECG=serializers.CharField(required=False,allow_null=True, allow_blank=True)
+    temperature = serializers.CharField(required=False,allow_null=True, allow_blank=True)
+    poller = serializers.BooleanField(required=False)
+    icterus = serializers.BooleanField(required=False)
+    LAP = serializers.BooleanField(required=False)
+    edema_feet = serializers.BooleanField(required=False)
+    clubbing = serializers.BooleanField(required=False)
+    cyanosis = serializers.BooleanField(required=False)
     class Meta:
         model = PatientCondition
         fields = [
             'complaints', 'past_history', 'personal_H_O',
-            'poller', 'icterus', 'LAP', 'clubbing', 'cyanosis'
+            'poller', 'icterus', 'LAP', 'clubbing', 'cyanosis','edema_feet'
         ]
+        
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation["complaints"] = complaint_serializers(instance.complaints,many=True).data  
         representation["past_history"] = past_history_serializers(instance.past_history,many=True).data  
         representation["personal_H_O"] = personal_H_O_serializers(instance.personal_H_O,many=True).data  
+        for field in ['blood_pressure', 'pulse', 'blood_sugar', 'ECG', 'temperature']:
+            if representation.get(field) is None:
+                representation[field] = ""
         return representation     
 
-class FCSerializer(serializers.Serializer):
+class FCSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     patient_condition = PatientConditionSerializer()
 
@@ -192,7 +206,7 @@ class FCSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         condition_data = validated_data.pop('patient_condition')
-
+      
         complaints = condition_data.pop('complaints')
         past_history = condition_data.pop('past_history')
         personal_H_O = condition_data.pop('personal_H_O')

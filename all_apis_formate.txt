@@ -127,7 +127,8 @@ Formate :
     "personal_H_O": [1, 2],     <- pass personal_H_O multiple ID
     "poller": false,
     "icterus": false,
-    "LAP": "Normal",
+    "LAP": false,
+    "edema_feet":false,
     "clubbing": false,
     "cyanosis": false
   },
