@@ -321,6 +321,7 @@ class ServiceSerializer(serializers.Serializer):
 
 #===================OPDSerializer===========================
 class OPDSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
     service_id = serializers.SlugRelatedField(slug_field='id', queryset=Service.objects.all(),many=True, required=True)
     doctor_data = serializers.SlugRelatedField(slug_field='id', queryset=Doctor.objects.all(), required=True)
     sr_no = serializers.CharField(max_length=100,required=False)
@@ -473,3 +474,73 @@ class ad_serializers(serializers.ModelSerializer):
         instance.save()
         return instance
     
+
+
+
+#=========================================================
+class DCSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    
+    sr_no = serializers.IntegerField()
+    date = serializers.CharField(required=True)
+    patient_name = serializers.CharField(max_length=100,required=False)
+    age = serializers.IntegerField()
+    gender = serializers.CharField(required=True)
+    address = serializers.CharField(required=True)
+   
+    date_of_admission = serializers.CharField(required=True)
+    date_of_discharge = serializers.CharField(required=True)
+    type_of_discharge = serializers.CharField(required=True)
+    diagnosis = serializers.CharField(required=True)
+    clinical_notes = serializers.CharField(required=True)
+    investigation = serializers.CharField(required=True)
+    treatment_given = serializers.CharField(required=True)
+    bed_no = serializers.SlugRelatedField(slug_field='id', queryset=bed.objects.all(), required=True)
+    # check_up_details = serializers.JSONField(required=False) 
+    # REQUIRED_CHECKUP_KEYS = {'gc', 'bp', 'pr', 'rs', 'cvs', 'cns'}
+    class Meta:
+        model = DC
+        fields = '__all__'
+        
+        
+    # def validate_check_up_details(self, value):
+    #     if not isinstance(value, dict):
+    #         raise serializers.ValidationError("check_up_details must be a dictionary.")
+        
+    #     keys = set(value.keys())
+
+    #     if not keys.issubset(self.REQUIRED_CHECKUP_KEYS):
+    #         invalid_keys = keys - self.REQUIRED_CHECKUP_KEYS
+    #         raise serializers.ValidationError(f"Invalid keys in check_up_details: {', '.join(invalid_keys)}")
+
+    #     return value
+    def create(self, validated_data):
+        return DC.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.sr_no = validated_data.get('sr_no', instance.sr_no)
+        instance.date = validated_data.get('date', instance.date)
+        instance.patient_name = validated_data.get('patient_name', instance.patient_name)
+        instance.age = validated_data.get('age', instance.age)
+        instance.gender = validated_data.get('gender', instance.gender)
+        instance.address = validated_data.get('address', instance.address)
+        instance.bed_no = validated_data.get('bed_no', instance.bed_no)
+        instance.date_of_admission = validated_data.get('date_of_admission', instance.date_of_admission)
+        instance.date_of_discharge = validated_data.get('date_of_discharge', instance.date_of_discharge)
+        instance.type_of_discharge = validated_data.get('type_of_discharge', instance.type_of_discharge)
+        instance.diagnosis = validated_data.get('diagnosis', instance.diagnosis)
+        instance.clinical_notes = validated_data.get('clinical_notes', instance.clinical_notes)
+         
+        instance.treatment_given = validated_data.get('treatment_given', instance.treatment_given)
+        # new_checkup = validated_data.get('check_up_details')
+        # if new_checkup:
+        #     existing_checkup = instance.check_up_details or {}
+        #     existing_checkup.update(new_checkup)
+        #     instance.check_up_details = existing_checkup 
+
+        instance.save()
+        return instance
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["bed_no"] = bed_serializers(instance.bed_no).data  
+        return representation  

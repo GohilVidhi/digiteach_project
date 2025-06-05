@@ -305,3 +305,44 @@ Formate :
 {
   "file":"pass file in file formate"
 }
+
+
+#--------------------------------------------------------------
+
+15 : ad API : 
+
+GET : https://hayatplus.pythonanywhere.com/dc/
+
+POST : https://hayatplus.pythonanywhere.com/dc/
+
+PATCH : https://hayatplus.pythonanywhere.com/dc/pass ID/
+
+DELETE : https://hayatplus.pythonanywhere.com/dc/pass ID/
+
+
+Formate : 
+
+{
+  "sr_no": 101,
+  "date": "2025-06-04",
+  "age": 35,
+  "gender": "Male",
+  "address": "123 Main Street",
+  "bed_no": 1,
+  "date_of_admission": "2025-05-20",
+  "date_of_discharge": "2025-06-01",
+  "type_of_discharge": "Recovered",
+  "diagnosis": "Viral fever",
+  "clinical_notes": "Patient improving steadily",
+  "investigation": "Blood test, Chest X-ray",
+  "treatment_given": "Paracetamol, IV fluids",
+  
+  "check_up_details": {
+    "gc": "Good",
+    "bp": "120/80",
+    "pr": "76",
+    "rs": "Normal",
+    "cvs": "Normal",
+    "cns": "Conscious"
+  }
+}

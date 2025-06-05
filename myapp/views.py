@@ -790,3 +790,52 @@ class ad_view(APIView):
                 return Response({'status': "invalid id"})
         else:
             return Response({'status': "invalid data"})
+
+
+#=====================
+class dc_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = DC.objects.get(id=id)
+                serializer = DCSerializer(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except DC.DoesNotExist:
+                return Response({'status': "Invalid"})
+        else:
+            uid = DC.objects.all().order_by("-id")
+            return get_paginated_result(uid, request, DCSerializer, CustomPagination)
+
+    def post(self, request):
+        serializer = DCSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = DC.objects.get(id=id)
+        except DC.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = DCSerializer(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = DC.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except DC.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        
+

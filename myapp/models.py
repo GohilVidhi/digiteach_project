@@ -170,3 +170,23 @@ class ad(models.Model):
     file=models.FileField(upload_to="ad")
     
 
+
+class DC(models.Model):
+    sr_no = models.IntegerField()
+    date = models.CharField(max_length=255,blank=True,null=True)
+    patient_name = models.CharField(max_length=100,blank=True,null=True)
+    age = models.IntegerField()
+    gender = models.CharField(max_length=255,blank=True,null=True)
+    address = models.TextField()
+    bed_no = models.ForeignKey(bed, on_delete=models.CASCADE)
+    date_of_admission = models.CharField(max_length=255,blank=True,null=True)
+    date_of_discharge = models.CharField(max_length=255,blank=True,null=True)
+    type_of_discharge = models.CharField(max_length=255,blank=True,null=True)
+    diagnosis = models.CharField(max_length=255,blank=True,null=True)
+    clinical_notes = models.CharField(max_length=255,blank=True,null=True)
+    investigation = models.CharField(max_length=255,blank=True,null=True)
+    treatment_given = models.CharField(max_length=255,blank=True,null=True)
+    # check_up_details = models.JSONField(default=dict)  
+
+    def __str__(self):
+        return f"Patient {self.sr_no} - Bed {self.bed_no}"

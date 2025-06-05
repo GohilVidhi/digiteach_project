@@ -66,6 +66,9 @@ urlpatterns = [
     path('ad_get/', ad_view.as_view()),
     path('ad_get/<int:id>/', ad_view.as_view()),
 
+    path('dc/', dc_view.as_view()),
+    path('dc/<int:id>/', dc_view.as_view()),
+
     
 
 ]
