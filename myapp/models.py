@@ -8,12 +8,33 @@ class bed(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+#==========Specialization=========================
+class Specialization(models.Model):
+    specialization_name = models.CharField(max_length=100,blank=True,null=True)
+
+    def __str__(self):
+        return self.specialization_name
+
+
+#================Doctor================
+class Doctor(models.Model):
+    doctor_name = models.CharField(max_length=100,blank=True,null=True)
+    specialization_id = models.ForeignKey(Specialization, on_delete=models.CASCADE,blank=True,null=True)
+    mobile_no = models.BigIntegerField(blank=True,null=True)
+    address = models.TextField(blank=True,null=True)
+    email=models.EmailField(blank=True,null=True)
+    date_of_joining=models.DateTimeField(auto_now_add=True,blank=True,null=True)
+    
+    def __str__(self):
+        return self.doctor_name
 
 class ipd(models.Model):
     sr_no=models.CharField(max_length=250)
     date=models.CharField(max_length=250)
     datetime_admission=models.CharField(max_length=250)
     bed_data=models.ForeignKey(bed,on_delete=models.CASCADE)
+    doctor_data=models.ForeignKey(Doctor,on_delete=models.CASCADE,blank=True,null=True)
     patient_name=models.CharField(max_length=250)
     age=models.IntegerField()
     gender=models.CharField(max_length=250)
@@ -36,7 +57,8 @@ class scalp(models.Model):
     mobile=models.BigIntegerField()
     datetime_discharge=models.CharField(max_length=250,blank=True,null=True)
     fees=models.IntegerField(default=0)
-
+    bed_data=models.ForeignKey(bed,on_delete=models.CASCADE,blank=True,null=True)
+    doctor_data=models.ForeignKey(Doctor,on_delete=models.CASCADE,blank=True,null=True)
     def __str__(self) -> str:
         return self.sr_no
 
@@ -129,24 +151,8 @@ class OPD(models.Model):
     def __str__(self):
         return f"{self.patient_name}"
 
-#==========Specialization=========================
-class Specialization(models.Model):
-    specialization_name = models.CharField(max_length=100,blank=True,null=True)
 
-    def __str__(self):
-        return self.specialization_name
 
-#================Doctor================
-class Doctor(models.Model):
-    doctor_name = models.CharField(max_length=100,blank=True,null=True)
-    specialization_id = models.ForeignKey(Specialization, on_delete=models.CASCADE,blank=True,null=True)
-    mobile_no = models.BigIntegerField(blank=True,null=True)
-    address = models.TextField(blank=True,null=True)
-    email=models.EmailField(blank=True,null=True)
-    date_of_joining=models.DateTimeField(auto_now_add=True,blank=True,null=True)
-    
-    def __str__(self):
-        return self.doctor_name
     
 class Staff(models.Model):
     staff_name = models.CharField(max_length=100)

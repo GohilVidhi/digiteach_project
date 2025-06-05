@@ -22,6 +22,7 @@ class bed_serializers(serializers.Serializer):
 class ipd_serializers(serializers.Serializer):
     id = serializers.IntegerField(required=False)
     bed_data = serializers.SlugRelatedField(slug_field='id', queryset=bed.objects.all(), required=True)
+    doctor_data = serializers.SlugRelatedField(slug_field='id', queryset=Doctor.objects.all(), required=True)
     sr_no = serializers.CharField(max_length=250)
     date = serializers.CharField(max_length=250)
     datetime_admission = serializers.CharField(max_length=250)
@@ -47,6 +48,7 @@ class ipd_serializers(serializers.Serializer):
         instance.date = validated_data.get('date', instance.date)
         instance.datetime_admission = validated_data.get('datetime_admission', instance.datetime_admission)
         instance.bed_data = validated_data.get('bed_data', instance.bed_data)
+        instance.doctor_data = validated_data.get('doctor_data', instance.doctor_data)
         instance.patient_name = validated_data.get('patient_name', instance.patient_name)
         instance.age = validated_data.get('age', instance.age)
         instance.gender = validated_data.get('gender', instance.gender)
@@ -60,12 +62,15 @@ class ipd_serializers(serializers.Serializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation["bed_data"] = bed_serializers(instance.bed_data).data  
+        representation["doctor_data"] = DoctorSerializer(instance.doctor_data).data 
         return representation        
 
 
 
 class scalp_serializers(serializers.Serializer):
     id = serializers.IntegerField(required=False)
+    bed_data = serializers.SlugRelatedField(slug_field='id', queryset=bed.objects.all(), required=True)
+    doctor_data = serializers.SlugRelatedField(slug_field='id', queryset=Doctor.objects.all(), required=True)
     sr_no = serializers.CharField(max_length=250)
     date = serializers.CharField(max_length=250)
     datetime_admission = serializers.CharField(max_length=250)
@@ -76,7 +81,7 @@ class scalp_serializers(serializers.Serializer):
     mobile = serializers.IntegerField()
     datetime_discharge=serializers.CharField(max_length=250, required=False)
     fees=serializers.IntegerField(default=0)
-   
+      
 
     class Meta:
         models=scalp
@@ -97,8 +102,15 @@ class scalp_serializers(serializers.Serializer):
         instance.mobile = validated_data.get('mobile', instance.mobile)
         instance.datetime_discharge = validated_data.get('datetime_discharge', instance.datetime_discharge)
         instance.fees = validated_data.get('fees', instance.fees)
+        instance.bed_data = validated_data.get('bed_data', instance.bed_data)
+        instance.doctor_data = validated_data.get('doctor_data', instance.doctor_data)
         instance.save()
         return instance
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["bed_data"] = bed_serializers(instance.bed_data).data  
+        representation["doctor_data"] = DoctorSerializer(instance.doctor_data).data 
+        return representation   
 
 
 
