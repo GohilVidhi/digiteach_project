@@ -346,3 +346,19 @@ Formate :
     "cns": "Conscious"
   }
 }
+
+
+
+16 : Medicine API : 
+
+GET : https://hayatplus.pythonanywhere.com/medicine/
+
+POST : https://hayatplus.pythonanywhere.com/medicine/
+
+PATCH : https://hayatplus.pythonanywhere.com/medicine/pass ID/
+
+DELETE : https://hayatplus.pythonanywhere.com/medicine/pass ID/
+
+Formate : 
+
+{"name":"medicine name"}

@@ -839,3 +839,60 @@ class dc_view(APIView):
             return Response({'status': "invalid data"})
         
 
+
+class medicine_view(APIView):
+    def get(self, request, id=None,name=None):
+        if id:
+            try:
+                uid = medicine.objects.get(id=id)
+                serializer = medicine_serializers(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except medicine.DoesNotExist:
+                return Response({'status': "Invalid"})
+        elif name:
+            try:
+                uid = medicine.objects.filter(medicine_name__icontains=name)
+                serializer = medicine_serializers(uid,many=True)
+                return Response({'status': 'success', 'data': serializer.data})
+            except medicine.DoesNotExist:
+                return Response({'status': "Invalid"})    
+        else:
+            uid = medicine.objects.all().order_by("-id")
+            # serializer = medicine_serializers(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, medicine_serializers, CustomPagination)
+
+    def post(self, request):
+        serializer = medicine_serializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = medicine.objects.get(id=id)
+        except medicine.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = medicine_serializers(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = medicine.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except medicine.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        
+
+

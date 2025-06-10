@@ -332,18 +332,18 @@ class OPDSerializer(serializers.Serializer):
     address = serializers.CharField(max_length=250,required=False)
     payment_mode = serializers.CharField(max_length=250,required=False)
     prescription = serializers.CharField(max_length=250,required=False)
-    date = serializers.SerializerMethodField()
+    date = serializers.CharField(max_length=250,required=False)
     total_amount = serializers.FloatField(required=False)
 
 
     class Meta:
         model = OPD
         fields = '__all__'
-        read_only_fields = ['date']
-    def get_date(self, obj):
-        local_tz = pytz.timezone('Asia/Kolkata')  # Set to your desired time zone
-        local_dt = obj.date.astimezone(local_tz)
-        return local_dt.strftime('%Y-%m-%d %H:%M:%S')        
+    #     read_only_fields = ['date']
+    # def get_date(self, obj):
+    #     local_tz = pytz.timezone('Asia/Kolkata')  # Set to your desired time zone
+    #     local_dt = obj.date.astimezone(local_tz)
+    #     return local_dt.strftime('%Y-%m-%d %H:%M:%S')        
         
     def create(self, validated_data):
         service_data = validated_data.pop('service_id', [])
@@ -363,13 +363,15 @@ class OPDSerializer(serializers.Serializer):
         instance.prescription = validated_data.get('prescription', instance.prescription)
         instance.doctor_data = validated_data.get('doctor_data', instance.doctor_data)
         instance.total_amount = validated_data.get('total_amount', instance.total_amount)
+        instance.date = validated_data.get('date', instance.date)
         service_data = validated_data.pop('service_id', None)
         if service_data is not None:
             instance.service_id.set(service_data)
         instance.save()
         return instance
     
-    
+
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation["service_id"] = ServiceSerializer(instance.service_id,many=True).data  
@@ -398,15 +400,15 @@ class DoctorSerializer(serializers.Serializer):
     address = serializers.CharField(max_length=250,required=False)
     mobile_no = serializers.IntegerField(required=False)
     email = serializers.EmailField(required=False)
-    date_of_joining = serializers.SerializerMethodField()
+    date_of_joining = serializers.CharField(max_length=250,required=False)
     class Meta:
         model = Doctor
         fields = '__all__'
         read_only_fields = ['date_of_joining']
-    def get_date_of_joining(self, obj):
-        local_tz = pytz.timezone('Asia/Kolkata')  # Set to your desired time zone
-        local_dt = obj.date_of_joining.astimezone(local_tz)
-        return local_dt.strftime('%Y-%m-%d %H:%M:%S')  
+    # def get_date_of_joining(self, obj):
+    #     local_tz = pytz.timezone('Asia/Kolkata')  # Set to your desired time zone
+    #     local_dt = obj.date_of_joining.astimezone(local_tz)
+    #     return local_dt.strftime('%Y-%m-%d %H:%M:%S')  
     
     def create(self, validated_data):
         return Doctor.objects.create(**validated_data)
@@ -414,6 +416,7 @@ class DoctorSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.doctor_name = validated_data.get('doctor_name', instance.doctor_name)
         instance.specialization_id = validated_data.get('specialization_id', instance.specialization_id)
+        instance.date_of_joining = validated_data.get('date_of_joining', instance.date_of_joining)
         instance.save()
         return instance
     
@@ -432,17 +435,17 @@ class StaffSerializer(serializers.Serializer):
     mobile_no = serializers.CharField(max_length=15, required=True)
     email = serializers.EmailField(required=True)
     address = serializers.CharField(required=True)
-    date_of_joining = serializers.SerializerMethodField()
+    date_of_joining = serializers.CharField(max_length=250,required=False)
 
 
     class Meta:
         model = Staff
         fields = '__all__'
-        read_only_fields = ['date_of_joining']
-    def get_date_of_joining(self, obj):
-        local_tz = pytz.timezone('Asia/Kolkata')  # Set to your desired time zone
-        local_dt = obj.date_of_joining.astimezone(local_tz)
-        return local_dt.strftime('%Y-%m-%d %H:%M:%S')        
+    #     read_only_fields = ['date_of_joining']
+    # def get_date_of_joining(self, obj):
+    #     local_tz = pytz.timezone('Asia/Kolkata')  # Set to your desired time zone
+    #     local_dt = obj.date_of_joining.astimezone(local_tz)
+    #     return local_dt.strftime('%Y-%m-%d %H:%M:%S')        
         
     def create(self, validated_data):
         return Staff.objects.create(**validated_data)
@@ -544,3 +547,21 @@ class DCSerializer(serializers.Serializer):
         representation = super().to_representation(instance)
         representation["bed_no"] = bed_serializers(instance.bed_no).data  
         return representation  
+
+class medicine_serializers(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    medicine_name=serializers.CharField(max_length=250,required=True)
+   
+
+    class Meta:
+        models=medicine
+        fields ='__all__'
+        
+
+    def create(self, validated_data):
+        return medicine.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.medicine_name=validated_data.get('medicine_name',instance.medicine_name)
+        instance.save()
+        return instance         

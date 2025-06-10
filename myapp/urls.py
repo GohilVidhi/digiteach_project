@@ -69,6 +69,11 @@ urlpatterns = [
     path('dc/', dc_view.as_view()),
     path('dc/<int:id>/', dc_view.as_view()),
 
+    path('medicine/', medicine_view.as_view()),
+    path('medicine/<int:id>/', medicine_view.as_view()),
+    path('medicine/<str:name>/', medicine_view.as_view()),
+
+
     
 
 ]

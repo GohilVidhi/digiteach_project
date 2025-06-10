@@ -24,7 +24,7 @@ class Doctor(models.Model):
     mobile_no = models.BigIntegerField(blank=True,null=True)
     address = models.TextField(blank=True,null=True)
     email=models.EmailField(blank=True,null=True)
-    date_of_joining=models.DateTimeField(auto_now_add=True,blank=True,null=True)
+    date_of_joining = models.CharField(max_length=100,blank=True,null=True)
     
     def __str__(self):
         return self.doctor_name
@@ -136,7 +136,7 @@ class Service(models.Model):
 #============OPD=================
 class OPD(models.Model):
     sr_no = models.CharField(max_length=250,blank=True,null=True)
-    date = models.DateTimeField(auto_now_add=True,blank=True,null=True)
+    date = models.CharField(max_length=100,blank=True,null=True)
     patient_name = models.CharField(max_length=100,blank=True,null=True)
     age = models.IntegerField()
     gender = models.CharField(max_length=10,blank=True,null=True)
@@ -160,7 +160,7 @@ class Staff(models.Model):
     mobile_no = models.BigIntegerField()
     email = models.EmailField()
     address = models.TextField()
-    date_of_joining = models.DateTimeField(auto_now_add=True,blank=True,null=True)
+    date_of_joining = models.CharField(max_length=100,blank=True,null=True)
 
     def __str__(self):
         return self.staff_name    
@@ -190,3 +190,10 @@ class DC(models.Model):
 
     def __str__(self):
         return f"Patient {self.sr_no} - Bed {self.bed_no}"
+
+
+class medicine(models.Model):
+    medicine_name=models.CharField(max_length=250,blank=True,null=True)
+
+    def __str__(self) -> str:
+        return self.name
