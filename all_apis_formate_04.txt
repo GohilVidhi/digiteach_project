@@ -247,19 +247,54 @@ DELETE : https://hayatplus.pythonanywhere.com/opd/pass ID/
 
 Formate : 
 
-{
-    "service_id": [1,2],    <-- multiple Service id
-    "doctor_data":1         <-- doctor id  
-    "sr_no": "13",
-    "patient_name": "vidhi gohil",
-    "age": 26,
-    "mobile_no": 6598523659,
-    "gender": "female",
-    "address": "ssss",
-    "payment_mode": "UPI",
-    "prescription": "ddd"
-    "total_amount":10.00
+
+{"service_id": [1,2],      <-- multiple Service id
+  "doctor_data":1,         <-- doctor id  
+  "sr_no": "13",
+  "patient_name": "vidhi gohil",
+  "age": 26,
+  "mobile_no": 6598523659,
+  "gender": "female",
+  "address": "ssss",
+  "payment_mode": "UPI",
+  "prescription": "ddd" ,
+  "date": "2025-06-05 10:17:48",
+  "total_amount": 1000,
+  "vitals":{
+    "BP":100,
+    "PR":100,
+    "SPO":100,
+    "Sugar":100
+  },
+  "examination":{
+    "RS":100,
+    "CVS":100,
+    "CNS":100,
+    "PA":100
+  },
+  "given_medicine": [
+      {
+        "medicine_data":  2,     <--  Medicine id
+        "quantity": 6,
+        "doses": "1 tablet every 8 hours"
+      }
+    ],
+  "chief_complaints": [
+     {
+      "complaints_data":1,             <--  complaint id
+      "duration":"3"
+     }
+    ]
+  
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -309,7 +344,7 @@ Formate :
 
 #--------------------------------------------------------------
 
-15 : ad API : 
+15 : dc API : 
 
 GET : https://hayatplus.pythonanywhere.com/dc/
 

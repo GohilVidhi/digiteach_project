@@ -17,4 +17,4 @@ admin.site.register(Doctor)
 admin.site.register(OPD)
 admin.site.register(Staff)
 admin.site.register(ad)
-
+admin.site.register(medicine)

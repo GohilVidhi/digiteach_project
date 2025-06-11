@@ -334,7 +334,12 @@ class OPDSerializer(serializers.Serializer):
     prescription = serializers.CharField(max_length=250,required=False)
     date = serializers.CharField(max_length=250,required=False)
     total_amount = serializers.FloatField(required=False)
-
+    
+    chief_complaints = serializers.JSONField(required=False) 
+    vitals = serializers.JSONField(required=False) 
+    examination = serializers.JSONField(required=False) 
+    given_medicine = serializers.JSONField(required=False) 
+   
 
     class Meta:
         model = OPD
@@ -344,7 +349,90 @@ class OPDSerializer(serializers.Serializer):
     #     local_tz = pytz.timezone('Asia/Kolkata')  # Set to your desired time zone
     #     local_dt = obj.date.astimezone(local_tz)
     #     return local_dt.strftime('%Y-%m-%d %H:%M:%S')        
-        
+
+    def validate_vitals(self, value):
+        required_keys = {"BP", "PR", "SPO", "Sugar"}
+
+        missing_keys = required_keys - value.keys()
+        if missing_keys:
+            raise serializers.ValidationError(f"Missing keys: {', '.join(missing_keys)}")
+
+        for key in required_keys:
+            if not isinstance(value.get(key), (int, float)):
+                raise serializers.ValidationError(f"Invalid value type for {key}. Must be int or float.")
+
+        return value
+    
+    def validate_chief_complaints(self, value):
+       
+        if value is None:
+            raise serializers.ValidationError("Complaint ID list cannot be null.")
+
+        # Extract all complaint IDs from the input
+        complaint_ids = []
+        for item in value:
+            cid = item.get("complaints_data")
+            if cid is None:
+                raise serializers.ValidationError("Complaint ID cannot be null.")
+            if not isinstance(cid, int):
+                raise serializers.ValidationError(
+                    f"Invalid format for complaint ID: '{cid}'. Must be an integer."
+                )
+            complaint_ids.append(cid)
+
+        # Query the database for these IDs
+        existing_ids = list(
+            complaint.objects.filter(id__in=complaint_ids).values_list("id", flat=True)
+        )
+
+        # Find any IDs that do not exist
+        missing_ids = []
+        for cid in complaint_ids:
+            if cid not in existing_ids:
+                missing_ids.append(cid)
+
+        if missing_ids:
+            raise serializers.ValidationError(
+                f"Complaint(s) with ID(s) {missing_ids} not found in the complaints master list."
+            )
+
+        return value
+    def validate_given_medicine(self, value):
+       
+        if value is None:
+            raise serializers.ValidationError("Medicine ID list cannot be null.")
+
+        # Extract all complaint IDs from the input
+        complaint_ids = []
+        for item in value:
+            cid = item.get("medicine_data")
+            if cid is None:
+                raise serializers.ValidationError("Medicine ID cannot be null.")
+            if not isinstance(cid, int):
+                raise serializers.ValidationError(
+                    f"Invalid format for Medicine ID: '{cid}'. Must be an integer."
+                )
+            complaint_ids.append(cid)
+
+        # Query the database for these IDs
+        existing_ids = list(
+            medicine.objects.filter(id__in=complaint_ids).values_list("id", flat=True)
+        )
+
+        # Find any IDs that do not exist
+        missing_ids = []
+        for cid in complaint_ids:
+            if cid not in existing_ids:
+                missing_ids.append(cid)
+
+        if missing_ids:
+            raise serializers.ValidationError(
+                f"Medicine(s) with ID(s) {missing_ids} not found in the Medicine list."
+            )
+
+        return value
+    
+      
     def create(self, validated_data):
         service_data = validated_data.pop('service_id', [])
         opd_instance = OPD.objects.create(**validated_data)
@@ -367,6 +455,32 @@ class OPDSerializer(serializers.Serializer):
         service_data = validated_data.pop('service_id', None)
         if service_data is not None:
             instance.service_id.set(service_data)
+      
+        
+        new_chief_complaints = validated_data.get('chief_complaints')
+        if new_chief_complaints:
+            if isinstance(instance.chief_complaints, list):
+                instance.chief_complaints.extend(new_chief_complaints)
+            else:
+                instance.chief_complaints = new_chief_complaints 
+        new_vitals = validated_data.get('vitals')
+        if new_vitals:
+            existing_vitals = instance.vitals or {}
+            existing_vitals.update(new_vitals)
+            instance.vitals = existing_vitals 
+        new_examination = validated_data.get('examination')
+        if new_examination:
+            existing_examination = instance.examination or {}
+            existing_examination.update(new_examination)
+            instance.examination = existing_examination  
+        new_given_medicine = validated_data.get('given_medicine')
+        if new_given_medicine:
+            if isinstance(instance.given_medicine, list):
+                instance.given_medicine.extend(new_given_medicine)
+            else:
+                instance.given_medicine = new_given_medicine  
+ 
+        
         instance.save()
         return instance
     
@@ -376,6 +490,39 @@ class OPDSerializer(serializers.Serializer):
         representation = super().to_representation(instance)
         representation["service_id"] = ServiceSerializer(instance.service_id,many=True).data  
         representation["doctor_data"] = DoctorSerializer(instance.doctor_data).data  
+       
+        chief_complaints_data = representation.get('chief_complaints')
+        
+        if chief_complaints_data and isinstance(chief_complaints_data, list):
+            processed_complaints = []
+            for entry in chief_complaints_data:
+                complaint_id = entry.get('complaints_data')
+                complaint_obj = complaint.objects.get(id=complaint_id)
+                mapped_complaint_data = {
+                    "id": complaint_obj.id,
+                    "name": complaint_obj.name
+                }
+                entry['complaints_data'] = mapped_complaint_data
+                processed_complaints.append(entry)
+            
+            representation['chief_complaints'] = processed_complaints
+        given_medicine_data = representation.get('given_medicine')
+        
+        if given_medicine_data and isinstance(given_medicine_data, list):
+            processed_complaints = []
+            for entry in given_medicine_data:
+                complaint_id = entry.get('medicine_data')
+                complaint_obj = medicine.objects.get(id=complaint_id)
+                mapped_complaint_data = {
+                    "id": complaint_obj.id,
+                    "name": complaint_obj.medicine_name
+                }
+                entry['medicine_data'] = mapped_complaint_data
+                processed_complaints.append(entry)
+            
+            representation['given_medicine'] = processed_complaints
+
+        
         return representation           
     
 #====================SpecializationSerializer=====================

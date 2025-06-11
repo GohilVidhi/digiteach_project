@@ -147,6 +147,10 @@ class OPD(models.Model):
     payment_mode = models.CharField(max_length=250,blank=True,null=True)
     prescription = models.TextField()
     total_amount=models.FloatField(blank=True,null=True)
+    chief_complaints = models.JSONField(default=list)
+    vitals = models.JSONField(default=dict)
+    examination = models.JSONField(default=dict)
+    given_medicine = models.JSONField(default=list)
 
     def __str__(self):
         return f"{self.patient_name}"
@@ -196,4 +200,4 @@ class medicine(models.Model):
     medicine_name=models.CharField(max_length=250,blank=True,null=True)
 
     def __str__(self) -> str:
-        return self.name
+        return self.medicine_name
