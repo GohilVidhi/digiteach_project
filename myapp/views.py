@@ -433,6 +433,7 @@ class admin_login_view(APIView):
             email = serializer.validated_data.get('email', None)
             mobile_no = serializer.validated_data.get('mobile_no', None)
             password = serializer.validated_data.get('password')
+            type = serializer.validated_data.get('type')
 
             # Try to get the user by email or mobile
             try:
@@ -445,13 +446,17 @@ class admin_login_view(APIView):
 
                 # Raw password match (replace with `check_password` if using hashing)
                 if user.password == password:
-                    refresh = RefreshToken.for_user(user)
-                    response_serializer = admin_login_serializers(user)
-                    return Response({
-                        'status': 'success',
-                        'data': response_serializer.data,
-                        'token': str(refresh.access_token)
-                    })
+                    if user.type == type:
+                        refresh = RefreshToken.for_user(user)
+                        response_serializer = admin_login_serializers(user)
+                        return Response({
+                            'status': 'success',
+                            'data': response_serializer.data,
+                            'token': str(refresh.access_token)
+                        })
+                    else:
+                        return Response({'status': 'invalid Token'})
+                
                 else:
                     return Response({'status': 'invalid password'})
 

@@ -25,7 +25,7 @@ class ipd_serializers(serializers.Serializer):
     doctor_data = serializers.SlugRelatedField(slug_field='id', queryset=Doctor.objects.all(), required=True)
     sr_no = serializers.CharField(max_length=250)
     date = serializers.CharField(max_length=250)
-    datetime_admission = serializers.CharField(max_length=250)
+    datetime_admission  = serializers.CharField(max_length=250)
     patient_name = serializers.CharField(max_length=250)
     age = serializers.IntegerField()
     gender = serializers.CharField(max_length=250)
