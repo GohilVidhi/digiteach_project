@@ -901,3 +901,80 @@ class medicine_view(APIView):
         
 
 
+class diagnosis_view(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                uid = diagnosis.objects.get(id=id)
+                serializer = diagnosis_serializers(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except diagnosis.DoesNotExist:
+                return Response({'status': "Invalid"})  
+        else:
+            uid = diagnosis.objects.all().order_by("-id")
+            # serializer = diagnosis_serializers(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, diagnosis_serializers, CustomPagination)
+
+    def post(self, request):
+        serializer = diagnosis_serializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = diagnosis.objects.get(id=id)
+        except diagnosis.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = diagnosis_serializers(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = diagnosis.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except diagnosis.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        
+
+
+
+
+
+
+class UpdateSystemeticByIndex(APIView):
+    def patch(self, request, pk):
+        try:
+            instance = ipd.objects.get(pk=pk)
+        except ipd.DoesNotExist:
+            return Response({"error": "Instance not found."})
+
+        systemetic_examination = instance.systemetic_examination or []
+
+        index = request.data.get('index')
+        if index is None or index >= len(systemetic_examination):
+            return Response({"error": "Invalid index."})
+
+        for key, value in request.data.items():
+            if key != "index":
+                systemetic_examination[index][key] = value
+
+        instance.systemetic_examination = systemetic_examination
+        instance.save()
+
+        return Response({"message": "Update successful."})
+
+
+

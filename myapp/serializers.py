@@ -33,12 +33,305 @@ class ipd_serializers(serializers.Serializer):
     mobile = serializers.IntegerField()
     datetime_discharge=serializers.CharField(max_length=250, required=False)
     dd_note=serializers.CharField(max_length=250, required=False)
+
+    payment_details = serializers.JSONField(required=False) 
+    past_historys = serializers.JSONField(required=False) 
+    daily_chief_complaints = serializers.JSONField(required=False) 
+    systemetic_examination = serializers.JSONField(required=False) 
+    general_examination = serializers.JSONField(required=False) 
+    daily_examination = serializers.JSONField(required=False) 
+    given_medicine = serializers.JSONField(required=False) 
+    daily_given_treatment = serializers.JSONField(required=False) 
+    referred_by = serializers.CharField(max_length=250, required=False)
+    date_of_refer = serializers.CharField(max_length=250, required=False)
+    advice  = serializers.CharField(max_length=1000)
+    discharge_condition  = serializers.CharField(max_length=1000)
    
 
     class Meta:
         models=ipd
         fields ='__all__'
-        
+
+    def validate_payment_details(self, value):
+       
+        if value is None:
+            raise serializers.ValidationError("Staff ID list cannot be null.")
+
+        # Extract all complaint IDs from the input
+        complaint_ids = []
+        for item in value:
+            cid = item.get("staff_data")
+            if cid is None:
+                raise serializers.ValidationError("Staff ID cannot be null.")
+            if not isinstance(cid, int):
+                raise serializers.ValidationError(
+                    f"Invalid format for staff ID: '{cid}'. Must be an integer."
+                )
+            complaint_ids.append(cid)
+
+        # Query the database for these IDs
+        existing_ids = list(
+            Staff.objects.filter(id__in=complaint_ids).values_list("id", flat=True)
+        )
+
+        # Find any IDs that do not exist
+        missing_ids = []
+        for cid in complaint_ids:
+            if cid not in existing_ids:
+                missing_ids.append(cid)
+
+        if missing_ids:
+            raise serializers.ValidationError(
+                f"Staff(s) with ID(s) {missing_ids} not found in the staff master list."
+            )
+
+        return value  
+
+    def validate_past_historys(self, value):
+       
+        if value is None:
+            raise serializers.ValidationError("Past History ID list cannot be null.")
+
+        # Extract all complaint IDs from the input
+        complaint_ids = []
+        for item in value:
+            cid = item.get("past_history_data")
+            if cid is None:
+                raise serializers.ValidationError("Past History ID cannot be null.")
+            if not isinstance(cid, int):
+                raise serializers.ValidationError(
+                    f"Invalid format for Past History ID: '{cid}'. Must be an integer."
+                )
+            complaint_ids.append(cid)
+
+        # Query the database for these IDs
+        existing_ids = list(
+            past_history.objects.filter(id__in=complaint_ids).values_list("id", flat=True)
+        )
+
+        # Find any IDs that do not exist
+        missing_ids = []
+        for cid in complaint_ids:
+            if cid not in existing_ids:
+                missing_ids.append(cid)
+
+        if missing_ids:
+            raise serializers.ValidationError(
+                f"Past History (s) with ID(s) {missing_ids} not found in the Past History master list."
+            )
+
+        return value 
+
+    def validate_daily_chief_complaints(self, value):
+        if not value:
+            raise serializers.ValidationError("Chief complaints list cannot be empty.")
+
+        complaint_ids = []
+        for item in value:
+            chief_complaints = item.get("chief_complaints", [])
+            for complaints in chief_complaints:
+                cid = complaints.get("complaints_data")
+                print(cid)  
+                if cid is None:
+                    raise serializers.ValidationError("complaints_data is required for each complaint.")
+                if not isinstance(cid, int):
+                    raise serializers.ValidationError(f"Invalid complaints_data '{cid}': must be an integer.")
+                complaint_ids.append(cid)
+
+        # Validate all IDs exist
+        existing_ids = complaint.objects.filter(id__in=complaint_ids).values_list('id', flat=True)
+        missing_ids = [cid for cid in complaint_ids if cid not in existing_ids]
+
+        if missing_ids:
+            raise serializers.ValidationError(
+                f"complaints_data ID(s) not found: {missing_ids}"
+            )
+
+        return value
+    
+    def validate_systemetic_examination(self, value):
+       
+        if value is None:
+            raise serializers.ValidationError("Staff ID list cannot be null.")
+
+        # Extract all complaint IDs from the input
+        complaint_ids = []
+        for item in value:
+            cid = item.get("staff_data")
+            if cid is None:
+                raise serializers.ValidationError("Staff ID cannot be null.")
+            if not isinstance(cid, int):
+                raise serializers.ValidationError(
+                    f"Invalid format for staff ID: '{cid}'. Must be an integer."
+                )
+            complaint_ids.append(cid)
+
+        # Query the database for these IDs
+        existing_ids = list(
+            Staff.objects.filter(id__in=complaint_ids).values_list("id", flat=True)
+        )
+
+        # Find any IDs that do not exist
+        missing_ids = []
+        for cid in complaint_ids:
+            if cid not in existing_ids:
+                missing_ids.append(cid)
+
+        if missing_ids:
+            raise serializers.ValidationError(
+                f"Staff(s) with ID(s) {missing_ids} not found in the staff master list."
+            )
+
+        return value  
+
+    def validate_general_examination(self, value):
+       
+        if value is None:
+            raise serializers.ValidationError("Staff ID list cannot be null.")
+
+        # Extract all complaint IDs from the input
+        complaint_ids = []
+        for item in value:
+            cid = item.get("staff_data")
+            if cid is None:
+                raise serializers.ValidationError("Staff ID cannot be null.")
+            if not isinstance(cid, int):
+                raise serializers.ValidationError(
+                    f"Invalid format for staff ID: '{cid}'. Must be an integer."
+                )
+            complaint_ids.append(cid)
+
+        # Query the database for these IDs
+        existing_ids = list(
+            Staff.objects.filter(id__in=complaint_ids).values_list("id", flat=True)
+        )
+
+        # Find any IDs that do not exist
+        missing_ids = []
+        for cid in complaint_ids:
+            if cid not in existing_ids:
+                missing_ids.append(cid)
+
+        if missing_ids:
+            raise serializers.ValidationError(
+                f"Staff(s) with ID(s) {missing_ids} not found in the staff master list."
+            )
+
+        return value 
+    
+    def validate_daily_examination(self, value):
+       
+        if value is None:
+            raise serializers.ValidationError("Staff ID list cannot be null.")
+
+        # Extract all complaint IDs from the input
+        complaint_ids = []
+        for item in value:
+            cid = item.get("staff_data")
+            if cid is None:
+                raise serializers.ValidationError("Staff ID cannot be null.")
+            if not isinstance(cid, int):
+                raise serializers.ValidationError(
+                    f"Invalid format for staff ID: '{cid}'. Must be an integer."
+                )
+            complaint_ids.append(cid)
+
+        # Query the database for these IDs
+        existing_ids = list(
+            Staff.objects.filter(id__in=complaint_ids).values_list("id", flat=True)
+        )
+
+        # Find any IDs that do not exist
+        missing_ids = []
+        for cid in complaint_ids:
+            if cid not in existing_ids:
+                missing_ids.append(cid)
+
+        if missing_ids:
+            raise serializers.ValidationError(
+                f"Staff(s) with ID(s) {missing_ids} not found in the staff master list."
+            )
+
+        return value  
+
+    def validate_given_medicine(self, value):
+       
+        if value is None:
+            raise serializers.ValidationError("Medicine ID list cannot be null.")
+
+        # Extract all complaint IDs from the input
+        complaint_ids = []
+        for item in value:
+            cid = item.get("medicine_data")
+            if cid is None:
+                raise serializers.ValidationError("Medicine ID cannot be null.")
+            if not isinstance(cid, int):
+                raise serializers.ValidationError(
+                    f"Invalid format for Medicine ID: '{cid}'. Must be an integer."
+                )
+            complaint_ids.append(cid)
+
+        # Query the database for these IDs
+        existing_ids = list(
+            medicine.objects.filter(id__in=complaint_ids).values_list("id", flat=True)
+        )
+
+        # Find any IDs that do not exist
+        missing_ids = []
+        for cid in complaint_ids:
+            if cid not in existing_ids:
+                missing_ids.append(cid)
+
+        if missing_ids:
+            raise serializers.ValidationError(
+                f"Medicine(s) with ID(s) {missing_ids} not found in the Medicine list."
+            )
+
+        return value     
+    
+    def validate_daily_given_treatment(self, value):
+        if not value:
+            raise serializers.ValidationError("daily_given_treatment cannot be empty.")
+
+        staff_ids = []
+        medicine_ids = []
+
+        for item in value:
+            # Validate staff_id
+            staff_id = item.get("staff_id")
+            if staff_id is None:
+                raise serializers.ValidationError("staff_id is required.")
+            if not isinstance(staff_id, int):
+                raise serializers.ValidationError(f"Invalid staff_id '{staff_id}': must be an integer.")
+            staff_ids.append(staff_id)
+
+            # Validate given_treatment list
+            given_treatment = item.get("given_treatment", [])
+            if not given_treatment:
+                raise serializers.ValidationError("given_treatment list cannot be empty.")
+
+            for treatment in given_treatment:
+                medicine_data = treatment.get("medicine_data")
+                if medicine_data is None:
+                    raise serializers.ValidationError("medicine_data is required in each treatment.")
+                if not isinstance(medicine_data, int):
+                    raise serializers.ValidationError(f"Invalid medicine_data '{medicine_data}': must be an integer.")
+                medicine_ids.append(medicine_data)
+
+        # Validate existence of staff IDs
+        existing_staff = set(Staff.objects.filter(id__in=staff_ids).values_list("id", flat=True))
+        missing_staff = [sid for sid in staff_ids if sid not in existing_staff]
+        if missing_staff:
+            raise serializers.ValidationError(f"staff_id(s) not found: {missing_staff}")
+
+        # Validate existence of medicine IDs
+        existing_meds = set(medicine.objects.filter(id__in=medicine_ids).values_list("id", flat=True))
+        missing_meds = [mid for mid in medicine_ids if mid not in existing_meds]
+        if missing_meds:
+            raise serializers.ValidationError(f"medicine_data ID(s) not found: {missing_meds}")
+
+        return value
+
 
     def create(self, validated_data):
         return ipd.objects.create(**validated_data)
@@ -56,6 +349,64 @@ class ipd_serializers(serializers.Serializer):
         instance.mobile = validated_data.get('mobile', instance.mobile)
         instance.datetime_discharge = validated_data.get('datetime_discharge', instance.datetime_discharge)
         instance.dd_note = validated_data.get('dd_note', instance.dd_note)
+        
+        instance.referred_by = validated_data.get('referred_by', instance.referred_by)
+        instance.date_of_refer = validated_data.get('date_of_refer', instance.date_of_refer)
+        instance.advice = validated_data.get('advice', instance.advice)
+        instance.discharge_condition = validated_data.get('discharge_condition', instance.discharge_condition)
+
+        new_payment_details = validated_data.get('payment_details')
+        if new_payment_details:
+            if isinstance(instance.payment_details, list):
+                instance.payment_details.extend(new_payment_details)
+            else:
+                instance.payment_details = new_payment_details 
+        
+        new_past_historys = validated_data.get('past_historys')
+        if new_past_historys:
+            if isinstance(instance.past_historys, list):
+                instance.past_historys.extend(new_past_historys)
+            else:
+                instance.past_historys = new_past_historys
+
+        new_daily_chief_complaints = validated_data.get('daily_chief_complaints')
+        if new_daily_chief_complaints:
+            if isinstance(instance.daily_chief_complaints, list):
+                instance.daily_chief_complaints.extend(new_daily_chief_complaints)
+            else:
+                instance.daily_chief_complaints = new_daily_chief_complaints   
+
+        new_systemetic_examination = validated_data.get('systemetic_examination')
+        if new_systemetic_examination:
+            if isinstance(instance.systemetic_examination, list):
+                instance.systemetic_examination.extend(new_systemetic_examination)
+            else:
+                instance.systemetic_examination = new_systemetic_examination    
+
+        new_general_examination = validated_data.get('general_examination')
+        if new_general_examination:
+            if isinstance(instance.general_examination, list):
+                instance.general_examination.extend(new_general_examination)
+            else:
+                instance.general_examination = new_general_examination    
+        new_daily_examination = validated_data.get('daily_examination')
+        if new_daily_examination:
+            if isinstance(instance.daily_examination, list):
+                instance.daily_examination.extend(new_daily_examination)
+            else:
+                instance.daily_examination = new_daily_examination                       
+        new_given_medicine = validated_data.get('given_medicine')
+        if new_given_medicine:
+            if isinstance(instance.given_medicine, list):
+                instance.given_medicine.extend(new_given_medicine)
+            else:
+                instance.given_medicine = new_given_medicine
+        new_daily_given_treatment = validated_data.get('daily_given_treatment')
+        if new_daily_given_treatment:
+            if isinstance(instance.daily_given_treatment, list):
+                instance.daily_given_treatment.extend(new_daily_given_treatment)
+            else:
+                instance.daily_given_treatment = new_daily_given_treatment        
         instance.save()
         return instance
 
@@ -63,6 +414,119 @@ class ipd_serializers(serializers.Serializer):
         representation = super().to_representation(instance)
         representation["bed_data"] = bed_serializers(instance.bed_data).data  
         representation["doctor_data"] = DoctorSerializer(instance.doctor_data).data 
+        
+        # Reusable staff enrichment helper
+        def enrich_staff(item, key="staff_data"):
+            staff_id = item.get(key)
+            if staff_id:
+                try:
+                    staff = Staff.objects.get(id=staff_id)
+                    item[key] = {
+                        "id": staff.id,
+                        "staff_name": staff.staff_name,
+                        "department": staff.department,
+                        "mobile_no": staff.mobile_no,
+                    }
+                except Staff.DoesNotExist:
+                    item[key] = None
+            return item
+
+        # payment_details
+        representation["payment_details"] = [
+            enrich_staff(item, key="staff_data")
+            for item in representation.get("payment_details", [])
+        ]
+
+        # general_examination
+        representation["general_examination"] = [
+            enrich_staff(item, key="staff_data")
+            for item in representation.get("general_examination", [])
+        ]
+
+        # systemetic_examination
+        representation["systemetic_examination"] = [
+            enrich_staff(item, key="staff_data")
+            for item in representation.get("systemetic_examination", [])
+        ]
+
+        # daily_given_treatment (uses 'staff_id' instead of 'staff_data')
+        representation["daily_given_treatment"] = [
+            enrich_staff(item, key="staff_id")
+            for item in representation.get("daily_given_treatment", [])
+        ]
+
+        representation["daily_examination"] = [
+            enrich_staff(item, key="staff_data")
+            for item in representation.get("daily_examination", [])
+        ]
+        
+        def enrich_past_history(item, key="past_history_data"):
+            history_id = item.get(key)
+            if history_id:
+                try:
+                    history = past_history.objects.get(id=history_id)
+                    item[key] = {
+                        "id": history.id,
+                        "name": history.name  # adjust field names as per your model
+                       
+                    }
+                except past_history.DoesNotExist:
+                    item[key] = None
+            return item
+
+        # Apply past_history enrichment
+        representation["past_historys"] = [
+            enrich_past_history(item)
+            for item in representation.get("past_historys", [])
+        ]
+
+        def enrich_complaints(daily_item):
+            for complaints in daily_item.get("chief_complaints", []):
+                cid = complaints.get("complaints_data")
+                if cid:
+                    try:
+                        complaint_obj = complaint.objects.get(id=cid)
+                        complaints["complaints_data"] = {
+                            "id": complaint_obj.id,
+                            "name": complaint_obj.name # replace with real fields
+                            
+                        }
+                    except complaint.DoesNotExist:
+                        complaints["complaints_data"] = None
+            return daily_item
+
+        # Apply to each daily_chief_complaints item
+        representation["daily_chief_complaints"] = [
+            enrich_complaints(item)
+            for item in representation.get("daily_chief_complaints", [])
+        ]
+
+        def enrich_medicine(item, key="medicine_data"):
+            med_id = item.get(key)
+            if med_id:
+                try:
+                    medicines = medicine.objects.get(id=med_id)
+                    item[key] = {
+                        "id": medicines.id,
+                        "medicine_name": medicines.medicine_name
+                    
+                    }
+                except medicine.DoesNotExist:
+                    item[key] = None
+            return item
+
+        # ✅ Enrich given_medicine list
+        representation["given_medicine"] = [
+            enrich_medicine(item)
+            for item in representation.get("given_medicine", [])
+        ]
+
+        # ✅ Enrich nested given_treatment inside daily_given_treatment
+        for treatment_entry in representation.get("daily_given_treatment", []):
+            treatment_entry["given_treatment"] = [
+                enrich_medicine(item)
+                for item in treatment_entry.get("given_treatment", [])
+            ]
         return representation        
 
 
@@ -339,6 +803,7 @@ class OPDSerializer(serializers.Serializer):
     vitals = serializers.JSONField(required=False) 
     examination = serializers.JSONField(required=False) 
     given_medicine = serializers.JSONField(required=False) 
+    diagnosis_detail = serializers.JSONField(required=False) 
    
 
     class Meta:
@@ -354,7 +819,7 @@ class OPDSerializer(serializers.Serializer):
         required_keys = {"BP", "PR", "SPO", "Sugar"}
 
         missing_keys = required_keys - value.keys()
-        if missing_keys:
+        if missing_keys:  
             raise serializers.ValidationError(f"Missing keys: {', '.join(missing_keys)}")
 
         for key in required_keys:
@@ -362,7 +827,42 @@ class OPDSerializer(serializers.Serializer):
                 raise serializers.ValidationError(f"Invalid value type for {key}. Must be int or float.")
 
         return value
-    
+
+
+    def validate_diagnosis_detail(self, value):
+       
+        if value is None:
+            raise serializers.ValidationError("diagnosis ID list cannot be null.")
+
+        # Extract all complaint IDs from the input
+        complaint_ids = []
+        for item in value:
+            cid = item.get("diagnosis_data")
+            if cid is None:
+                raise serializers.ValidationError("diagnosis ID cannot be null.")
+            if not isinstance(cid, int):
+                raise serializers.ValidationError(
+                    f"Invalid format for diagnosis ID: '{cid}'. Must be an integer."
+                )
+            complaint_ids.append(cid)
+
+        # Query the database for these IDs
+        existing_ids = list(
+            diagnosis.objects.filter(id__in=complaint_ids).values_list("id", flat=True)
+        )
+
+        # Find any IDs that do not exist
+        missing_ids = []
+        for cid in complaint_ids:
+            if cid not in existing_ids:
+                missing_ids.append(cid)
+
+        if missing_ids:
+            raise serializers.ValidationError(
+                f"Diagnosis(s) with ID(s) {missing_ids} not found in the diagnosis master list."
+            )
+
+        return value  
     def validate_chief_complaints(self, value):
        
         if value is None:
@@ -478,7 +978,13 @@ class OPDSerializer(serializers.Serializer):
             if isinstance(instance.given_medicine, list):
                 instance.given_medicine.extend(new_given_medicine)
             else:
-                instance.given_medicine = new_given_medicine  
+                instance.given_medicine = new_given_medicine 
+        new_diagnosis_detail = validated_data.get('diagnosis_detail')
+        if new_diagnosis_detail:
+            if isinstance(instance.diagnosis_detail, list):
+                instance.diagnosis_detail.extend(new_diagnosis_detail)
+            else:
+                instance.diagnosis_detail = new_diagnosis_detail          
  
         
         instance.save()
@@ -492,7 +998,6 @@ class OPDSerializer(serializers.Serializer):
         representation["doctor_data"] = DoctorSerializer(instance.doctor_data).data  
        
         chief_complaints_data = representation.get('chief_complaints')
-        
         if chief_complaints_data and isinstance(chief_complaints_data, list):
             processed_complaints = []
             for entry in chief_complaints_data:
@@ -507,7 +1012,6 @@ class OPDSerializer(serializers.Serializer):
             
             representation['chief_complaints'] = processed_complaints
         given_medicine_data = representation.get('given_medicine')
-        
         if given_medicine_data and isinstance(given_medicine_data, list):
             processed_complaints = []
             for entry in given_medicine_data:
@@ -521,6 +1025,20 @@ class OPDSerializer(serializers.Serializer):
                 processed_complaints.append(entry)
             
             representation['given_medicine'] = processed_complaints
+        given_diagnosis_detail = representation.get('diagnosis_detail')
+        if given_diagnosis_detail and isinstance(given_diagnosis_detail, list):
+            processed_complaints = []
+            for entry in given_diagnosis_detail:
+                complaint_id = entry.get('diagnosis_data')
+                complaint_obj = diagnosis.objects.get(id=complaint_id)
+                mapped_complaint_data = {
+                    "id": complaint_obj.id,
+                    "diagnosis_name": complaint_obj.diagnosis_name
+                }
+                entry['diagnosis_data'] = mapped_complaint_data
+                processed_complaints.append(entry)
+            
+            representation['diagnosis_detail'] = processed_complaints    
 
         
         return representation           
@@ -712,3 +1230,24 @@ class medicine_serializers(serializers.Serializer):
         instance.medicine_name=validated_data.get('medicine_name',instance.medicine_name)
         instance.save()
         return instance         
+
+
+
+
+class diagnosis_serializers(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    diagnosis_name=serializers.CharField(max_length=250,required=True)
+   
+
+    class Meta:
+        models=diagnosis
+        fields ='__all__'
+        
+
+    def create(self, validated_data):
+        return diagnosis.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.diagnosis_name=validated_data.get('diagnosis_name',instance.diagnosis_name)
+        instance.save()
+        return instance     

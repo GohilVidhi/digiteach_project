@@ -73,6 +73,13 @@ urlpatterns = [
     path('medicine/<int:id>/', medicine_view.as_view()),
     path('medicine/<str:name>/', medicine_view.as_view()),
 
+    path('diagnosis/', diagnosis_view.as_view()),
+    path('diagnosis/<int:id>/', diagnosis_view.as_view()),
+
+
+    path('update/<int:pk>/', UpdateSystemeticByIndex.as_view()),
+
+
 
     
 

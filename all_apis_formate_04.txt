@@ -284,7 +284,16 @@ Formate :
       "complaints_data":1,             <--  complaint id
       "duration":"3"
      }
-    ]
+    ],
+  "diagnosis_detail": [
+     {
+      "diagnosis_data":1,             <--  diagnosis id
+      "duration":"3"
+     }
+    ],  
+
+    "advice": "advice",
+    "next_visit": " pass date"
   
 }
 
@@ -298,8 +307,7 @@ Formate :
 
 
 
-#--------------------------------------------------------------
-
+#--------------------------------------------------------------   
 13 : staff API : 
 
 GET : https://hayatplus.pythonanywhere.com/staff/
@@ -396,4 +404,139 @@ DELETE : https://hayatplus.pythonanywhere.com/medicine/pass ID/
 
 Formate : 
 
-{"name":"medicine name"}
+{"medicine_name":"medicine name"}
+
+
+
+17 : Diagnosis API : 
+
+GET : https://hayatplus.pythonanywhere.com/diagnosis/
+
+POST : https://hayatplus.pythonanywhere.com/diagnosis/
+
+PATCH : https://hayatplus.pythonanywhere.com/diagnosis/pass ID/
+
+DELETE : https://hayatplus.pythonanywhere.com/diagnosis/pass ID/
+
+Formate : 
+
+{"diagnosis_name":"diagnosis name"}
+
+
+
+
+
+
+
+
+
+========================
+
+
+
+
+{
+  "bed_data": 1,
+  "doctor_data": 1,
+  "sr_no": "SR12345",
+  "date": "2025-05-12",
+  "datetime_admission": "2025-05-12 10:30:00",
+  "patient_name": "John Doe",
+  "age": 45,
+  "gender": "Male",
+  "address": "123 Main Street, Cityname",
+  "mobile": 9876543210,
+  "datetime_discharge": "2025-05-15 14:00:00",
+  "dd_note": "Patient stable and discharged",
+
+  "payment_details": [
+    {
+      "paid_amount": 100,
+      "payment_mode": "online",
+      "payment_date_time": "04-07-2025",
+      "staff_data": 1
+    }
+  ],
+
+  "past_historys": [
+    {
+      "duration": "3 days",
+      "past_history_data": 1
+    }
+  ],
+
+  "daily_chief_complaints": [
+    {
+      "datetime": "1234567989",
+      "chief_complaints": [
+        {
+          "duration": "3 days",
+          "complaints_data": 1
+        }
+      ]
+    }
+  ],
+
+  "systemetic_examination": [
+    {
+      "PA": 100,
+      "RS": 100,
+      "CNS": 100,
+      "CVS": 100,
+      "date_time": "04-07-2025",
+      "staff_data": 1
+    }
+  ],
+
+  "general_examination": [
+    {
+      "temperature": 100,
+      "pulse": 100,
+      "RR": 100,
+      "BP": 100,
+      "SPO2": 100,
+      "sugar": 100,
+      "date_time": "04-07-2025",
+      "staff_data": 1
+    }
+  ],
+  "daily_examination": [
+            {
+                "WBC": 100,
+                "platlet": 100,
+                "CRP": 100,
+                "ESR": 100,
+                "HB": 100,
+                "CGOT": 100,
+                "SGPT": 100,
+                "date_time": "04-07-2025",
+                "staff_data": 1
+            }
+        ],
+
+  "given_medicine": [
+    {
+      "medicine_data": 1,
+      "quantity": 6,
+      "doses": "1 tablet every 8 hours"
+    }
+  ],
+
+  "daily_given_treatment": [
+    {
+      "staff_id": 1,
+      "datetime": "1234567989",
+      "given_treatment": [
+        {
+          "duration": "3 days",
+          "medicine_data": 1
+        }
+      ]
+    }
+  ],
+
+  "referred_by": "Nilesh",
+  "date_of_refer": "04-07-2025",
+  "advice": "3 months rest",
+  "discharge_condition": "yes"
+}

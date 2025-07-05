@@ -43,6 +43,20 @@ class ipd(models.Model):
     datetime_discharge=models.CharField(max_length=250,blank=True,null=True)
     dd_note=models.CharField(max_length=250,blank=True,null=True)
 
+    payment_details = models.JSONField(default=list)
+    past_historys = models.JSONField(default=list)
+    daily_chief_complaints = models.JSONField(default=list)
+    systemetic_examination = models.JSONField(default=list)
+    general_examination = models.JSONField(default=list)
+    daily_examination = models.JSONField(default=list)
+    given_medicine = models.JSONField(default=list)
+    daily_given_treatment = models.JSONField(default=list)
+    referred_by=models.CharField(max_length=250,blank=True,null=True)
+    date_of_refer=models.CharField(max_length=250,blank=True,null=True)
+    advice=models.TextField(blank=True,null=True)
+    discharge_condition=models.TextField(blank=True,null=True)
+
+
     def __str__(self) -> str:
         return self.sr_no
 
@@ -151,6 +165,7 @@ class OPD(models.Model):
     vitals = models.JSONField(default=dict)
     examination = models.JSONField(default=dict)
     given_medicine = models.JSONField(default=list)
+    diagnosis_detail = models.JSONField(default=list)
 
     def __str__(self):
         return f"{self.patient_name}"
@@ -201,3 +216,9 @@ class medicine(models.Model):
 
     def __str__(self) -> str:
         return self.medicine_name
+    
+class diagnosis(models.Model):
+    diagnosis_name=models.CharField(max_length=250,blank=True,null=True)
+
+    def __str__(self) -> str:
+        return self.diagnosis_name    
