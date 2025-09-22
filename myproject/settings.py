@@ -103,15 +103,15 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hms',
+        'NAME': 'digiteach',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': 'localhost',  # Change if using a remote database
-        'PORT': '3306',       # Default MySQL port
+        'HOST': 'localhost',  
+        'PORT': '3306',       
        
     }
 }
-
+# digi@123
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

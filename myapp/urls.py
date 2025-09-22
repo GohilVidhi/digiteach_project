@@ -21,66 +21,13 @@ from myapp.views import *
 urlpatterns = [
     path('test', test.as_view()),
 
-    path('bed/', bed_view.as_view()),
-    path('bed/<int:id>/', bed_view.as_view()),
-
-    path('ipd/', ipd_view.as_view()),
-    path('ipd/<int:id>/', ipd_view.as_view()),
-    path('ipd/bed_id/<int:bed_id>/', ipd_view.as_view()),
-
-    path('scalp/', scalp_view.as_view()),
-    path('scalp/<int:id>/', scalp_view.as_view()),
-
-    path('complaint/', complaint_view.as_view()),
-    path('complaint/<int:id>/', complaint_view.as_view()),
+    path('designation/', Designation_view.as_view()),
+    path('designation/<int:id>/', Designation_view.as_view()),
     
-    path('past_history/', past_history_view.as_view()),
-    path('past_history/<int:id>/', past_history_view.as_view()),
+    path('school/', School_view.as_view()),
+    path('school/<int:id>/', School_view.as_view()),
     
-    path('personal_ho/', personal_H_O_view.as_view()),
-    path('personal_ho/<int:id>/', personal_H_O_view.as_view()),
-
-    path('fc/', fc_view.as_view()),
-    path('fc/<int:id>/', fc_view.as_view()),
-
-    path('admin_login/', admin_login_view.as_view()),
-    path('admin_login/<int:id>/', admin_login_view.as_view()),
-    path('admin_login/<str:email>/', admin_login_view.as_view()),
-
-    path('service/', Service_view.as_view()),
-    path('service/<int:id>/', Service_view.as_view()),
+    path('school/designation_id/<int:designation_id>/', School_view.as_view()),
     
-    path('specialization/', Specialization_view.as_view()),
-    path('specialization/<int:id>/', Specialization_view.as_view()),
-    
-    path('doctor/', Doctor_view.as_view()),
-    path('doctor/<int:id>/', Doctor_view.as_view()),
-
-    path('opd/', OPD_view.as_view()),
-    path('opd/<int:id>/', OPD_view.as_view()),
-    path('opd/doctor/<int:doctor_id>/', OPD_view.as_view()),
-
-    path('staff/', Staff_view.as_view()),
-    path('staff/<int:id>/', Staff_view.as_view()),
-
-    path('ad_get/', ad_view.as_view()),
-    path('ad_get/<int:id>/', ad_view.as_view()),
-
-    path('dc/', dc_view.as_view()),
-    path('dc/<int:id>/', dc_view.as_view()),
-
-    path('medicine/', medicine_view.as_view()),
-    path('medicine/<int:id>/', medicine_view.as_view()),
-    path('medicine/<str:name>/', medicine_view.as_view()),
-
-    path('diagnosis/', diagnosis_view.as_view()),
-    path('diagnosis/<int:id>/', diagnosis_view.as_view()),
-
-
-    path('update/<int:pk>/', UpdateSystemeticByIndex.as_view()),
-
-
-
-    
-
+   
 ]

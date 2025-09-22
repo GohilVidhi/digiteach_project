@@ -1,0 +1,42 @@
+
+
+Designation API:-
+
+GET:- https://digiteach.pythonanywhere.com/designation/
+
+POST:- https://digiteach.pythonanywhere.com/designation/
+
+PATCH:- https://digiteach.pythonanywhere.com/designation/pass id/
+
+DELETE:- https://digiteach.pythonanywhere.com/designation/pass id/
+
+Formate:-
+{
+  "name": "IT Head"
+  }
+
+#===============================================
+School API:-
+
+GET:- https://digiteach.pythonanywhere.com/school/
+
+POST:- https://digiteach.pythonanywhere.com/school/
+
+PATCH:- https://digiteach.pythonanywhere.com/school/pass id/
+
+DELETE:- https://digiteach.pythonanywhere.com/school/pass id/
+
+Formate =
+{
+  "school_name": "Green Valley High School",
+  "school_email": "greenvalley@example.com",
+  "school_address": "Near Central Park, Ring Road",
+  "contact_person_name": "Rajesh Sharma",
+  "contact_number": 9876543210,
+  "designation_data": 1,            <-pass designation table data (ID)
+  "address_line_1": "Building No. 12, Sector-4",
+  "address_line_2": "Opposite City Mall",
+  "landmark": "Near Metro Station",
+  "city": "Ahmedabad",
+  "district": "Ahmedabad"
+}
