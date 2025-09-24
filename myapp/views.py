@@ -22,7 +22,7 @@ class CustomPagination(PageNumberPagination):
     max_page_size = 100
     def get_paginated_response(self, data):
         return Response({
-           
+            
             'count': self.page.paginator.count,
             'next': self.get_next_link(),
             'previous': self.get_previous_link(),
@@ -34,7 +34,7 @@ def get_paginated_result(queryset, request, serializer_class, paginator_class):
     serializer = serializer_class(page, many=True)
     return paginator.get_paginated_response(serializer.data) 
 
-# ===============pagination code end==========================
+# =============== pagination code end==========================
 
 
 class Designation_view(APIView):
@@ -84,7 +84,6 @@ class Designation_view(APIView):
         else:
             return Response({'status': "invalid data"})
         
-
 
 
 class School_view(APIView):
@@ -143,5 +142,176 @@ class School_view(APIView):
         else:
             return Response({'status': "invalid data"})
         
+        
 
 
+class Job_view(APIView):
+    def get(self, request, id=None,school_id=None):
+        if id:
+            try:
+                uid = Job.objects.get(id=id)
+                serializer = Job_Serializer(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except Job.DoesNotExist:
+                return Response({'status': "Invalid"})
+
+        elif school_id:
+            try:
+                uid = Job.objects.filter(school_data__id=school_id)
+                # serializer = School_Serializer(uid,many=True)
+                # return Response({'status': 'success', 'data': serializer.data})
+                return get_paginated_result(uid, request, Job_Serializer, CustomPagination)
+            except Job.DoesNotExist:
+                return Response({'status': "Invalid"}) 
+        else:
+            uid = Job.objects.all().order_by("-id")
+            # serializer = Job_Serializer(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, Job_Serializer, CustomPagination)
+
+    def post(self, request):
+        serializer = Job_Serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = Job.objects.get(id=id)
+        except Job.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = Job_Serializer(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = Job.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except Job.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})
+        
+        
+class Teacher_view(APIView):
+    def get(self, request, teacher_id=None):
+        if teacher_id:
+            try:
+                teacher = Teacher.objects.get(teacher_id=teacher_id)
+                serializer = Teacher_Serializer(teacher)
+                return Response({'status': 'success', 'data': serializer.data})
+            except Teacher.DoesNotExist:
+                return Response({'status': "Invalid teacher_id"})
+        else:
+            teachers = Teacher.objects.all().order_by("-id")
+            return get_paginated_result(teachers, request, Teacher_Serializer, CustomPagination)
+
+    def post(self, request):
+        serializer = Teacher_Serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'Teacher registered successfully', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, teacher_id=None):
+        if not teacher_id:
+            return Response({'status': "teacher_id required for update"})
+        try:
+            teacher = Teacher.objects.get(teacher_id=teacher_id)
+        except Teacher.DoesNotExist:
+            return Response({'status': "invalid teacher_id"})
+        
+        serializer = Teacher_Serializer(teacher, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, teacher_id=None):
+        if not teacher_id:
+            return Response({'status': "teacher_id required for delete"})
+        try:
+            teacher = Teacher.objects.get(teacher_id=teacher_id)
+            teacher.delete()
+            return Response({'status': 'Deleted data'})
+        except Teacher.DoesNotExist:
+            return Response({'status': "invalid teacher_id"})
+
+
+#============================
+
+class Job_Apply_view(APIView):
+    def get(self, request, id=None, job_id=None,teacher_id=None):
+        if id:
+            try:
+                uid = Job_Apply.objects.get(id=id)
+                serializer = Apply_Serializer(uid)
+                return Response({'status': 'success', 'data': serializer.data})
+            except Job_Apply.DoesNotExist:
+                return Response({'status': "Invalid"})
+            
+        elif job_id:
+            try:
+                uid = Job_Apply.objects.filter(job_data__id=job_id)
+                # serializer = Apply_Serializer(uid,many=True)
+                # return Response({'status': 'success', 'data': serializer.data})
+                return get_paginated_result(uid, request, Apply_Serializer, CustomPagination)
+            except Job_Apply.DoesNotExist:
+                return Response({'status': "Invalid"})  
+            0
+        elif teacher_id:
+            try:
+                uid = Job_Apply.objects.filter(teacher_data__teacher_id=teacher_id)
+                # serializer = Apply_Serializer(uid,many=True)
+                # return Response({'status': 'success', 'data': serializer.data})
+                return get_paginated_result(uid, request, Apply_Serializer, CustomPagination)
+            except Job_Apply.DoesNotExist:
+                return Response({'status': "Invalid"}) 
+        else:
+            uid = Job_Apply.objects.all().order_by("-id")
+            # serializer = Apply_Serializer(uid, many=True)
+            # return Response({'status': 'success', 'data': serializer.data})
+            return get_paginated_result(uid, request, Apply_Serializer, CustomPagination)
+
+    def post(self, request):
+        serializer = Apply_Serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def patch(self, request, id=None):
+        try:
+            uid = Job_Apply.objects.get(id=id)
+        except Job_Apply.DoesNotExist:
+            return Response({'status': "invalid data"})
+        
+        serializer = Apply_Serializer(uid, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            return Response({'status': "invalid data", 'errors': serializer.errors})
+
+    def delete(self, request, id=None):
+        if id:
+            try:
+                uid = Job_Apply.objects.get(id=id)
+                uid.delete()
+                return Response({'status': 'Deleted data'})
+            except Job_Apply.DoesNotExist:
+                return Response({'status': "invalid id"})
+        else:
+            return Response({'status': "invalid data"})

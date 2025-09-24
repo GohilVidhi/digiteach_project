@@ -85,7 +85,7 @@ CORS_ALLOW_HEADERS = [
     "Content-Type",
     "Authorization"
 ]
-
+CORS_ALLOW_ALL_ORIGINS = True
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
 

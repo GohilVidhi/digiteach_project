@@ -4,3 +4,6 @@ from .models import *
 
 admin.site.register(Designation)
 admin.site.register(School)
+admin.site.register(Job)
+admin.site.register(Teacher)
+admin.site.register(Job_Apply)

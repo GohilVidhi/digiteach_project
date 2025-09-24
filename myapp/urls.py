@@ -26,8 +26,18 @@ urlpatterns = [
     
     path('school/', School_view.as_view()),
     path('school/<int:id>/', School_view.as_view()),
-    
     path('school/designation_id/<int:designation_id>/', School_view.as_view()),
     
-   
+    path('job/', Job_view.as_view()),
+    path('job/<int:id>/', Job_view.as_view()),
+    path('job/school_id/<int:school_id>/', Job_view.as_view()),
+    
+    path('teacher/', Teacher_view.as_view()),
+    path('teacher/<str:teacher_id>/', Teacher_view.as_view()),
+
+    path('job_apply/', Job_Apply_view.as_view()),
+    path('job_apply/<int:id>/', Job_Apply_view.as_view()),
+    path('job_apply/job_id/<int:job_id>/', Job_Apply_view.as_view()),
+    path('job_apply/teacher_id/<str:teacher_id>/', Job_Apply_view.as_view()),
+
 ]

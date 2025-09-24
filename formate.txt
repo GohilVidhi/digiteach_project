@@ -1,5 +1,3 @@
-
-
 Designation API:-
 
 GET:- https://digiteach.pythonanywhere.com/designation/
@@ -39,4 +37,91 @@ Formate =
   "landmark": "Near Metro Station",
   "city": "Ahmedabad",
   "district": "Ahmedabad"
+}
+
+
+
+
+
+1. job API:-
+
+GET:- https://digiteach.pythonanywhere.com/job/
+
+POST:- https://digiteach.pythonanywhere.com/job/
+
+PATCH:- https://digiteach.pythonanywhere.com/job/pass id/
+
+DELETE:- https://digiteach.pythonanywhere.com/job/pass id/
+
+Formate:-
+{
+    "school_data": 1,               <-pass school table data (ID)
+    "job_title": "Mathematics Teacher",
+    "job_description": "Looking for a Mathematics teacher for secondary classes (6th to 10th).",
+    "job_type": "Full-Time",
+    "subject": "Mathematics",
+    "experience_required": "2+ years",
+    "qualification": "B.Ed / M.Sc Mathematics",
+    "salary_range": "₹30,000 - ₹40,000 per month",
+    "posted_date": "2025-09-20",
+    "last_date_to_apply": "2025-10-05",
+    "status": "Open"
+}
+
+#===============================================
+
+2. Teacher API:-
+
+GET:- https://digiteach.pythonanywhere.com/teacher/
+
+POST:- https://digiteach.pythonanywhere.com/teacher/
+
+PATCH:- https://digiteach.pythonanywhere.com/teacher/pass teacher_id/
+
+DELETE:- https://digiteach.pythonanywhere.com/teacher/pass teacher_id/
+{
+    "teacher_id": "T1001",   <- this will be auto generated
+                                  1st teacher id will be T1001, 2nd teacher id will be T1002.
+    
+    "full_name": "Vidhi",
+    "email": "vidhi@example.com",
+    "mobile": "+91-9876543210",
+    "dob": "1992-07-15",
+    "gender": "Female",
+    "address": {
+        "locality": "A-56, Raj Nagar",
+        "city": "Lucknow",
+        "state": "Uttar Pradesh",
+        "pincode": "226001"
+    },
+    "qualification": "M.A English, B.Ed",
+    "experience": "4 years",
+    "subjects": ["English", "Social Studies"],
+    "preferred_classes": ["8th", "9th", "10th"],
+    "resume_url": pass file in FileField,
+    "profile_image": pass image in ImageField,
+    "youtube_link": https://www.youtube.com/channel/UC1234567890ABCDEFGHI,
+    "expected_salary": "₹25,000 - ₹35,000 per month",
+    "availability": "Immediate",
+    "skills": ["Communication", "Creative Writing", "Public Speaking"],
+    "languages_known": ["English", "Hindi"],
+    "status": "Active"
+}
+
+
+
+Job Apply API:-
+
+GET:- https://digiteach.pythonanywhere.com/job_apply/
+
+POST:- https://digiteach.pythonanywhere.com/job_apply/
+
+PATCH:- https://digiteach.pythonanywhere.com/job_apply/pass id/
+
+DELETE:- https://digiteach.pythonanywhere.com/job_apply/pass id/
+
+{
+    "job_data": 1,             <- pass job table data (ID)  
+    "teacher_data": "T1001",   <- pass teacher table data (teacher_id)
+    "status": "Pending"
 }
